@@ -503,16 +503,16 @@
                       <span class="art-item-left">
                           <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
                           <h4>
-                              <a href="/blog/example/%E6%9B%B4%E8%87%AA%E7%94%B1%E7%9A%84%E5%B8%83%E5%B1%80/" rel="prev" title="更自由的布局">
+                              <a href="/blog/example/%E8%87%AA%E5%AE%9A%E4%B9%89meta%E4%BF%A1%E6%81%AF/" rel="prev" title="自定义meta信息">
                                 
-                                    更自由的布局
+                                    自定义meta信息
                                 
                               </a>
                           </h4>
                           
                               
                               <h6 class="tags">
-                                  <a class="tag" href="/blog/blog/tags/tips/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> tips</a>
+                                  <a class="tag" href="/blog/blog/tags/ss/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> ss</a>
                               </h6>
                           
                       </span>
@@ -544,7 +544,19 @@
 
 
 
-  
+  <article class="post white-box comments">
+    <section class="article typo">
+      <h4><i class="fas fa-comments fa-fw" aria-hidden="true"></i>&nbsp;评论</h4>
+      
+      
+      
+        <section id="comments">
+          <div id="gitalk-container"></div>
+        </section>
+      
+      
+    </section>
+  </article>
 
 
 
@@ -1271,6 +1283,23 @@ setInterval("createtime()",250);
 
 
 
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: "8dda6e88e6b8638e8f31",
+      clientSecret: "b031cdcc94205f45e4e89fb171c321e5c851bb6e",
+      repo: "blog",
+      owner: "YNZH",
+      admin: "YNZH",
+      
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+      
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+    gitalk.render('gitalk-container');
+  </script>
 
 
 

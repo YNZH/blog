@@ -497,17 +497,12 @@
                       <span class="art-item-right" aria-hidden="true">
                           <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
                           <h4>
-                              <a href="/blog/example/%E8%87%AA%E5%AE%9A%E4%B9%89meta%E4%BF%A1%E6%81%AF/" rel="prev" title="自定义meta信息">
+                              <a href="/blog/example/top/" rel="prev" title="置顶：博客源码">
                                   
-                                      自定义meta信息
+                                      置顶：博客源码
                                   
                               </a>
                           </h4>
-                          
-                              
-                              <h6 class="tags">
-                                  <a class="tag" href="/blog/blog/tags/ss/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> ss</a>
-                              </h6>
                           
                       </span>
                   </section>
@@ -523,7 +518,19 @@
 
 
 
-  
+  <article class="post white-box comments">
+    <section class="article typo">
+      <h4><i class="fas fa-comments fa-fw" aria-hidden="true"></i>&nbsp;评论</h4>
+      
+      
+      
+        <section id="comments">
+          <div id="gitalk-container"></div>
+        </section>
+      
+      
+    </section>
+  </article>
 
 
 
@@ -1250,6 +1257,23 @@ setInterval("createtime()",250);
 
 
 
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: "8dda6e88e6b8638e8f31",
+      clientSecret: "b031cdcc94205f45e4e89fb171c321e5c851bb6e",
+      repo: "blog",
+      owner: "YNZH",
+      admin: "YNZH",
+      
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+      
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+    gitalk.render('gitalk-container');
+  </script>
 
 
 
