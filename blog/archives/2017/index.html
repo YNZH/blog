@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   
-  <title>Archives: 2019 | YNZH</title>
+  <title>Archives: 2017 | YNZH</title>
   
   
 
@@ -317,8 +317,8 @@
       
         
   <h2 class="title">
-    <a href="/blog/life/learn_c1/">
-      markdown基本用法
+    <a href="/blog/algorithms/DIG/">
+      迪杰斯特拉最短路径算法C语言简单实现
     </a>
   </h2>
 
@@ -348,7 +348,7 @@
             <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019年12月15日 16:12</p>
+    <p>2017年08月15日 15:17</p>
   </a>
 </div>
 
@@ -356,14 +356,6 @@
         
           
             
-  
-  <div class='new-meta-item category'>
-    <a href='/blog/blog/categories/markdown/' rel="nofollow">
-      <i class="fas fa-folder-open" aria-hidden="true"></i>
-      <p>markdown</p>
-    </a>
-  </div>
-
 
           
         
@@ -383,11 +375,11 @@
   <section class="article typo">
     <div class="article-entry" itemprop="articleBody">
       <blockquote>
-<p>markdown 的基本语法<br>自定义静态页面文件模板</p>
+<p>单源点求图最短路径之迪杰斯特拉最短路径算法<br>前提：途中不能存在负权值<br>目的：求出图中源点到其他所有顶点的最短路径。<br>思想：可以理解为一种贪心算法，从单源点出发，层层向外扩展，直到终点。</p>
 </blockquote>
       
         <div class="readmore">
-          <a href="/blog/life/learn_c1/" class="flat-box">
+          <a href="/blog/algorithms/DIG/" class="flat-box">
             <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
             阅读全文
           </a>
@@ -397,7 +389,7 @@
     
       <div class="full-width auto-padding tags">
         
-          <a href="/blog/blog/tags/markdown/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> markdown</a>
+          <a href="/blog/blog/tags/algorithms/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> algorithms</a>
         
       </div>
     
@@ -420,8 +412,8 @@
       
         
   <h2 class="title">
-    <a href="/blog/FLOPs_FLOPS/">
-      FLOPs理解
+    <a href="/blog/algorithms/NQueens/">
+      N皇后问题
     </a>
   </h2>
 
@@ -451,7 +443,7 @@
             <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019年09月27日 12:57</p>
+    <p>2017年08月15日 15:14</p>
   </a>
 </div>
 
@@ -459,14 +451,6 @@
         
           
             
-  
-  <div class='new-meta-item category'>
-    <a href='/blog/blog/categories/CNN/' rel="nofollow">
-      <i class="fas fa-folder-open" aria-hidden="true"></i>
-      <p>CNN</p>
-    </a>
-  </div>
-
 
           
         
@@ -486,17 +470,23 @@
   <section class="article typo">
     <div class="article-entry" itemprop="articleBody">
       <blockquote>
-<p>CNN中的FLOPs理解</p>
+<p>国际象棋中的N皇后问题推广的来<br>思想：1回溯法，从一条路往前走，能进则进，不能进则退回来，换一条路再试。<br>     2位运算来求解N皇后的高效算法(高效)</p>
 </blockquote>
       
         <div class="readmore">
-          <a href="/blog/FLOPs_FLOPS/" class="flat-box">
+          <a href="/blog/algorithms/NQueens/" class="flat-box">
             <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
             阅读全文
           </a>
         </div>
       
     </div>
+    
+      <div class="full-width auto-padding tags">
+        
+          <a href="/blog/blog/tags/algorithms/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> algorithms</a>
+        
+      </div>
     
   </section>
 </article>
@@ -517,8 +507,8 @@
       
         
   <h2 class="title">
-    <a href="/blog/pytorch2tf/">
-      pytorch模型迁移到tensorflow
+    <a href="/blog/algorithms/%E7%BA%B5%E6%A8%AA%E5%AD%97%E8%B0%9C/">
+      纵横字谜游戏
     </a>
   </h2>
 
@@ -548,7 +538,7 @@
             <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019年09月21日 00:00</p>
+    <p>2017年08月15日 12:16</p>
   </a>
 </div>
 
@@ -556,14 +546,6 @@
         
           
             
-  
-  <div class='new-meta-item category'>
-    <a href='/blog/blog/categories/tensorflow/' rel="nofollow">
-      <i class="fas fa-folder-open" aria-hidden="true"></i>
-      <p>pytorch&nbsp;/&nbsp;tensorflow</p>
-    </a>
-  </div>
-
 
           
         
@@ -583,11 +565,12 @@
   <section class="article typo">
     <div class="article-entry" itemprop="articleBody">
       <blockquote>
-<p>前几天用pytorch训练了一个目标检测的模型，但是因为要部署的嵌入式板子只支持tensorlfow、caffe等模型，最重要的是我从来没有使用过这两框架，坑跌的是tensorflow也只有1.9版本支持。想到了四种方案，第一种tensorlfow重新训练编写模型、第二种使用onnx框架进行模型转换、第三种使用caffe重写整个模型、第四使用板子支持的框架只重写inference阶段的模型，同时将pytorch训练好的权重进行迁移</p>
+<p>纵横字谜Uva232</p>
+
 </blockquote>
       
         <div class="readmore">
-          <a href="/blog/pytorch2tf/" class="flat-box">
+          <a href="/blog/algorithms/%E7%BA%B5%E6%A8%AA%E5%AD%97%E8%B0%9C/" class="flat-box">
             <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
             阅读全文
           </a>
@@ -597,7 +580,7 @@
     
       <div class="full-width auto-padding tags">
         
-          <a href="/blog/blog/tags/CNN/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> CNN</a>
+          <a href="/blog/blog/tags/algorithms/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> algorithms</a>
         
       </div>
     

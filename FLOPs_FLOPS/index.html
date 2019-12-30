@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   
-  <title>Archives: 2019 | YNZH</title>
+  <title>FLOPs理解 | YNZH</title>
   
   
 
@@ -55,7 +55,7 @@
   
   
   <div class="cover-wrapper">
-    <cover class='cover  half'>
+    <cover class='cover post half'>
       
         
   <h1 class='title'>YNZH's Blog</h1>
@@ -288,26 +288,10 @@
   <div class="l_body">
     <div class='body-wrapper'>
       <div class='l_main'>
-	
-		
-  <section class="post-list">
-    
-      
-        
-          
-        
-          
-        
-          
-        
-      
-    
-    
-      
-        
-          <div class='post-wrapper'>
-            <article class="post reveal ">
   
+
+  <article id="post" class="post white-box article-type-post" itemscope itemprop="blogPost">
+    
 
 
   <section class='meta'>
@@ -316,114 +300,13 @@
     <div class="meta" id="header-meta">
       
         
-  <h2 class="title">
-    <a href="/blog/life/learn_c1/">
-      markdown基本用法
-    </a>
-  </h2>
-
-
-      
-      <div class='new-meta-box'>
-        
-          
-        
-          
-            
-  <div class='new-meta-item author'>
-    
-      <a href="https://ynzh.github.io/blog" rel="nofollow">
-        
-          <i class="fas fa-user" aria-hidden="true"></i>
-        
-        <p>高晋峰</p>
+  
+    <h1 class="title">
+      <a href="/blog/FLOPs_FLOPS/">
+        FLOPs理解
       </a>
-    
-  </div>
-
-
-          
-        
-          
-            <div class="new-meta-item date">
-  <a class='notlink'>
-    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019年12月15日 16:12</p>
-  </a>
-</div>
-
-          
-        
-          
-            
+    </h1>
   
-  <div class='new-meta-item category'>
-    <a href='/blog/blog/categories/markdown/' rel="nofollow">
-      <i class="fas fa-folder-open" aria-hidden="true"></i>
-      <p>markdown</p>
-    </a>
-  </div>
-
-
-          
-        
-          
-            
-
-          
-        
-      </div>
-      
-        <hr>
-      
-    </div>
-  </section>
-
-
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      <blockquote>
-<p>markdown 的基本语法<br>自定义静态页面文件模板</p>
-</blockquote>
-      
-        <div class="readmore">
-          <a href="/blog/life/learn_c1/" class="flat-box">
-            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-    
-      <div class="full-width auto-padding tags">
-        
-          <a href="/blog/blog/tags/markdown/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> markdown</a>
-        
-      </div>
-    
-  </section>
-</article>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <article class="post reveal ">
-  
-
-
-  <section class='meta'>
-    
-    
-    <div class="meta" id="header-meta">
-      
-        
-  <h2 class="title">
-    <a href="/blog/FLOPs_FLOPS/">
-      FLOPs理解
-    </a>
-  </h2>
 
 
       
@@ -472,6 +355,24 @@
         
           
             
+  
+    <div class="new-meta-item browse busuanzi">
+      <a class='notlink'>
+        <i class="fas fa-eye" aria-hidden="true"></i>
+        <p>
+          <span id="busuanzi_value_page_pv">
+            <i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+          </span>
+        </p>
+      </a>
+    </div>
+  
+
+
+          
+        
+          
+            
 
           
         
@@ -483,148 +384,198 @@
   </section>
 
 
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      <blockquote>
+    <section class="article typo">
+      <div class="article-entry" itemprop="articleBody">
+        <blockquote>
 <p>CNN中的FLOPs理解</p>
 </blockquote>
-      
-        <div class="readmore">
-          <a href="/blog/FLOPs_FLOPS/" class="flat-box">
-            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
-            阅读全文
-          </a>
-        </div>
-      
-    </div>
-    
-  </section>
-</article>
+<a id="more"></a>                                                                                             
+<h2 id="FLOPS"><a href="#FLOPS" class="headerlink" title="FLOPS"></a>FLOPS</h2><p>注意全大写，是floating point operations per second的缩写，意指每秒浮点运算次数，理解为计算速度。是一个衡量硬件性能的指标。</p>
+<h2 id="FLOPs"><a href="#FLOPs" class="headerlink" title="FLOPs"></a>FLOPs</h2><p>注意s小写，是floating point operations的缩写（s表复数），意指浮点运算数，理解为计算量。可以用来衡量算法/模型的复杂度。本问题针对模型，应指的是FLOPs。以下答案不考虑activation function的运算。</p>
+<h2 id="卷积层FLOPs"><a href="#卷积层FLOPs" class="headerlink" title="卷积层FLOPs"></a>卷积层FLOPs</h2><blockquote>
+<p>(K × K × Ci + K × K × Ci  - 1 ) × H × W × Co = （ 2 ( K × K × Ci)  - 1 ) × H × W × Co</p>
+</blockquote>
+<p>Ci=input channel, k=kernel size, HW=output feature map size, Co=output channel.  2是因为一个MAC算2个operations。不考虑bias时有-1，有bias时没有-1。上面针对一个input feature map，没考虑batch size。理解上面这个公式分两步，括号内是第一步，计算出output feature map的一个pixel，然后再乘以H W Co，拓展到整个output feature map。括号内的部分又可以分为两步，第一项是乘法运算数，第二项是加法运算数，因为n个数相加，要加n-1次，所以不考虑bias，有一个-1，如果考虑bias，刚好中和掉</p>
+<h2 id="FC层"><a href="#FC层" class="headerlink" title="FC层"></a>FC层</h2><blockquote>
+<p>(I + I  - 1）× O = （2 × I - 1 ）× O</p>
+</blockquote>
+<p>I=input neuron numbers, O=output neuron numbers. -1，有bias时没有-1。分析同理，括号内是一个输出神经元的计算量，拓展到O了输出神经元。</p>
+<h2 id="推荐两个神器（pytorch）"><a href="#推荐两个神器（pytorch）" class="headerlink" title="推荐两个神器（pytorch）"></a>推荐两个神器（pytorch）</h2><p>torchstat 、 torchsummaryX可以用来计算pytorch构建的网络的参数，空间大小，MAdd，FLOPs等指标，简单好用</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://www.zhihu.com/question/65305385/answer/451060549" target="_blank" rel="noopener">https://www.zhihu.com/question/65305385/answer/451060549</a><br>torchstat：<a href="https://github.com/Swall0w/torchstat" target="_blank" rel="noopener">https://github.com/Swall0w/torchstat</a><br>torchsummaryX：<a href="https://github.com/nmhkahn/torchsummaryX" target="_blank" rel="noopener">https://github.com/nmhkahn/torchsummaryX</a></p>
 
-          </div>
+      </div>
+      
+      
+        <br>
         
-      
-        
-          <div class='post-wrapper'>
-            <article class="post reveal ">
-  
 
 
-  <section class='meta'>
-    
-    
-    <div class="meta" id="header-meta">
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
       
         
-  <h2 class="title">
-    <a href="/blog/pytorch2tf/">
-      pytorch模型迁移到tensorflow
-    </a>
-  </h2>
-
-
-      
-      <div class='new-meta-box'>
-        
-          
-        
-          
-            
-  <div class='new-meta-item author'>
-    
-      <a href="https://ynzh.github.io/blog" rel="nofollow">
-        
-          <i class="fas fa-user" aria-hidden="true"></i>
-        
-        <p>高晋峰</p>
-      </a>
-    
-  </div>
-
-
-          
-        
-          
-            <div class="new-meta-item date">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2019-12-30T10:56:33+08:00">
   <a class='notlink'>
-    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2019年09月21日 00:00</p>
+    <i class="fas fa-clock" aria-hidden="true"></i>
+    <p>更新于 2019年12月30日 10:56</p>
   </a>
 </div>
 
-          
+        
+      
         
           
-            
-  
-  <div class='new-meta-item category'>
-    <a href='/blog/blog/categories/tensorflow/' rel="nofollow">
-      <i class="fas fa-folder-open" aria-hidden="true"></i>
-      <p>pytorch&nbsp;/&nbsp;tensorflow</p>
-    </a>
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://ynzh.github.io/blog/FLOPs_FLOPS/&title=FLOPs理解 | YNZH&summary=
+CNN中的FLOPs理解
+"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://ynzh.github.io/blog/FLOPs_FLOPS/&title=FLOPs理解 | YNZH&summary=
+CNN中的FLOPs理解
+"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=https://ynzh.github.io/blog/FLOPs_FLOPS/&title=FLOPs理解 | YNZH&summary=
+CNN中的FLOPs理解
+"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/weibo.png">
+          
+        </a>
+      
+    
   </div>
+</div>
 
 
-          
+
         
-          
-            
-
-          
-        
-      </div>
-      
-        <hr>
       
     </div>
   </section>
 
 
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      <blockquote>
-<p>前几天用pytorch训练了一个目标检测的模型，但是因为要部署的嵌入式板子只支持tensorlfow、caffe等模型，最重要的是我从来没有使用过这两框架，坑跌的是tensorflow也只有1.9版本支持。想到了四种方案，第一种tensorlfow重新训练编写模型、第二种使用onnx框架进行模型转换、第三种使用caffe重写整个模型、第四使用板子支持的框架只重写inference阶段的模型，同时将pytorch训练好的权重进行迁移</p>
-</blockquote>
       
-        <div class="readmore">
-          <a href="/blog/pytorch2tf/" class="flat-box">
-            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
-            阅读全文
-          </a>
-        </div>
       
-    </div>
-    
-      <div class="full-width auto-padding tags">
-        
-          <a href="/blog/blog/tags/CNN/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> CNN</a>
-        
-      </div>
-    
-  </section>
-</article>
-
+          <div class="prev-next">
+              
+                  <section class="prev">
+                      <span class="art-item-left">
+                          <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
+                          <h4>
+                              <a href="/blog/life/learn_c1/" rel="prev" title="markdown基本用法">
+                                
+                                    markdown基本用法
+                                
+                              </a>
+                          </h4>
+                          
+                              
+                              <h6 class="tags">
+                                  <a class="tag" href="/blog/blog/tags/markdown/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> markdown</a>
+                              </h6>
+                          
+                      </span>
+                  </section>
+              
+              
+                  <section class="next">
+                      <span class="art-item-right" aria-hidden="true">
+                          <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
+                          <h4>
+                              <a href="/blog/pytorch2tf/" rel="prev" title="pytorch模型迁移到tensorflow">
+                                  
+                                      pytorch模型迁移到tensorflow
+                                  
+                              </a>
+                          </h4>
+                          
+                              
+                              <h6 class="tags">
+                                  <a class="tag" href="/blog/blog/tags/CNN/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> CNN</a>
+                              </h6>
+                          
+                      </span>
+                  </section>
+              
           </div>
-        
       
-    
-  </section>
-  
-    
-    <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
-    
-    
-
-  
+    </section>
+  </article>
 
 
-	
+
+  <!-- 显示推荐文章和评论 -->
+
+
+
+  <article class="post white-box comments">
+    <section class="article typo">
+      <h4><i class="fas fa-comments fa-fw" aria-hidden="true"></i>&nbsp;评论</h4>
+      
+      
+      
+        <section id="comments">
+          <div id="gitalk-container"></div>
+        </section>
+      
+      
+    </section>
+  </article>
+
+
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'FLOPs理解',
+      tools: true
+    }
+  </script>
+
+
 </div>
 <aside class='l_side'>
   
     
     
-      
       
         
           
@@ -833,77 +784,6 @@
         
           
           
-            
-              <section class='widget plain'>
-  
-<header class='material'>
-  <div><i class="fas fa-file fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;欢迎光临</div>
-  
-</header>
-
-  <div class='content material'>
-    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script>var getOSAndBrowser=function(){var os=navigator.platform;var userAgent=navigator.userAgent;var info="";var tempArray="";if(os.indexOf("Win")>-1){if(userAgent.indexOf("Windows NT 5.0")>-1){info+="Win2000"}else if(userAgent.indexOf("Windows NT 5.1")>-1){info+="WinXP"}else if(userAgent.indexOf("Windows NT 5.2")>-1){info+="Win2003"}else if(userAgent.indexOf("Windows NT 6.0")>-1){info+="WindowsVista"}else if(userAgent.indexOf("Windows NT 6.1")>-1||userAgent.indexOf("Windows 7")>-1){info+="Win7"}else if(userAgent.indexOf("Windows NT 6.2")>-1||userAgent.indexOf("Windows 8")>-1){info+="Win8"}else if(userAgent.indexOf("Windows NT 6.3")>-1||userAgent.indexOf("Windows 8.1")>-1){info+="Win8.1"}else if(userAgent.indexOf("Windows NT 10.0")>-1||userAgent.indexOf("Windows 10")>-1){info+="Win10"}else{info+="Other"}}else if(os.indexOf("Mac")>-1){info+="Mac"}else if(os.indexOf("X11")>-1){info+="Unix"}else if(os.indexOf("Linux")>-1){info+="Linux"}else{info+="Other"}info+="/";var isOpera=userAgent.indexOf("Opera")>-1;var isIE=userAgent.indexOf("compatible")>-1&&userAgent.indexOf("MSIE")>-1&&!isOpera;var isEdge=userAgent.toLowerCase().indexOf("edge")>-1&&!isIE;var isIE11=(userAgent.toLowerCase().indexOf("trident")>-1&&userAgent.indexOf("rv")>-1);if(/[Ff]irefox(\/\d+\.\d+)/.test(userAgent)){tempArray=/([Ff]irefox)\/(\d+\.\d+)/.exec(userAgent);info+=tempArray[1]+tempArray[2]}else if(isIE){var version="";var reIE=new RegExp("MSIE (\\d+\\.\\d+);");reIE.test(userAgent);var fIEVersion=parseFloat(RegExp["$1"]);if(fIEVersion==7){version="IE7"}else if(fIEVersion==8){version="IE8"}else if(fIEVersion==9){version="IE9"}else if(fIEVersion==10){version="IE10"}else{version="0"}info+=version}else if(isEdge){info+="Edge"}else if(isIE11){info+="IE11"}else if(/[Cc]hrome\/\d+/.test(userAgent)){tempArray=/([Cc]hrome)\/(\d+)/.exec(userAgent);info+=tempArray[1]+tempArray[2]}else if(/[Vv]ersion\/\d+\.\d+\.\d+(\.\d)* *[Ss]afari/.test(userAgent)){tempArray=/[Vv]ersion\/(\d+\.\d+\.\d+)(\.\d)* *([Ss]afari)/.exec(userAgent);info+=tempArray[3]+tempArray[1]}else if(/[Oo]pera.+[Vv]ersion\/\d+\.\d+/.test(userAgent)){tempArray=/([Oo]pera).+[Vv]ersion\/(\d+)\.\d+/.exec(userAgent);info+=tempArray[1]+tempArray[2]}else{info+="unknown"}return info};document.write("欢迎来自"+returnCitySN["cname"]+"的朋友");document.write("<br>您的 IP 是："+returnCitySN["cip"]);document.write("<br>您使用的是："+getOSAndBrowser());</script>
-  </div>
-</section>
-
-            
-          
-        
-          
-          
-            
-              <section class='widget plain'>
-  
-<header class='material'>
-  <div><i class="fas fa-file fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;访客地图</div>
-  
-</header>
-
-  <div class='content material'>
-    <script type="text/javascript" src="//rf.revolvermaps.com/0/0/4.js?i=5f0cvp69u1o&amp;m=0&amp;h=128&amp;c=ff0000&amp;r=10" async="async"></script>
-  </div>
-</section>
-
-            
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-      
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
         
           
           
@@ -912,48 +792,34 @@
           
             
               
-
-
-  <section class='widget music'>
+  <section class='widget toc-wrapper'>
     
 <header class='material'>
-  <div><i class="fas fa-compact-disc fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;最近在听</div>
+  <div><i class="fas fa-list fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;本文目录</div>
   
-    <a class="rightBtn"
-    
-      rel="external nofollow noopener noreferrer"
-    
-    
-      target="_blank"
-    
-    href="https://music.163.com/#/user/home?id=124273232"
-    title="https://music.163.com/#/user/home?id=124273232">
-    <i class="far fa-heart fa-fw"></i></a>
+    <!-- <div class='wrapper'><a class="s-toc rightBtn" rel="external nofollow noopener noreferrer noopener" href="javascript:void(0)" target="_blank"><i class="fas fa-thumbtack fa-fw"></i></a></div> -->
   
 </header>
 
     <div class='content material'>
-      
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.7.0/dist/APlayer.min.css">
-  <div class="aplayer"
-    data-theme="#1BCDFC"
-    
-    
-    data-mode="circulation"
-    data-server="netease"
-    data-type="playlist"
-    data-id="155064682"
-    data-volume="0.7">
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/aplayer@1.7.0/dist/APlayer.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/meting@1.1.0/dist/Meting.min.js"></script>
-
-
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#FLOPS"><span class="toc-text">FLOPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FLOPs"><span class="toc-text">FLOPs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#卷积层FLOPs"><span class="toc-text">卷积层FLOPs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FC层"><span class="toc-text">FC层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐两个神器（pytorch）"><span class="toc-text">推荐两个神器（pytorch）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-text">参考文献</span></a></li></ol>
     </div>
   </section>
 
 
             
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
           
         
           
@@ -1158,6 +1024,35 @@
           
         
       
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
     
 
   
@@ -1237,14 +1132,6 @@ setInterval("createtime()",250);
 </footer>
 <script>setLoadingBarProgress(80);</script>
 
-
-
-
-
-	<!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
-	
-
-	
 
 
       <script>setLoadingBarProgress(60);</script>
@@ -1331,6 +1218,23 @@ setInterval("createtime()",250);
 
 
 
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: "8dda6e88e6b8638e8f31",
+      clientSecret: "b031cdcc94205f45e4e89fb171c321e5c851bb6e",
+      repo: "blog",
+      owner: "YNZH",
+      admin: "YNZH",
+      
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+      
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+    gitalk.render('gitalk-container');
+  </script>
 
 
 
