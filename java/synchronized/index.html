@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   
-  <title>Category: javaweb | YNZH</title>
+  <title>synchronized锁原理总结 | YNZH</title>
   
   
 
@@ -55,7 +55,7 @@
   
   
   <div class="cover-wrapper">
-    <cover class='cover  half'>
+    <cover class='cover post half'>
       
         
   <h1 class='title'>YNZH's Blog</h1>
@@ -287,25 +287,11 @@
 
   <div class="l_body">
     <div class='body-wrapper'>
-      
-<div class='l_main'>
+      <div class='l_main'>
   
+
+  <article id="post" class="post white-box article-type-post" itemscope itemprop="blogPost">
     
-      
-  <section class="post-list">
-    
-      
-        
-          
-        
-      
-    
-    
-      
-        
-          <div class='post-wrapper'>
-            <article class="post reveal ">
-  
 
 
   <section class='meta'>
@@ -314,11 +300,13 @@
     <div class="meta" id="header-meta">
       
         
-  <h2 class="title">
-    <a href="/blog/projects/2market/">
-      校园二手交易网站~
-    </a>
-  </h2>
+  
+    <h1 class="title">
+      <a href="/blog/java/synchronized/">
+        synchronized锁原理总结
+      </a>
+    </h1>
+  
 
 
       
@@ -346,7 +334,7 @@
             <div class="new-meta-item date">
   <a class='notlink'>
     <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-    <p>2018年04月02日 00:00</p>
+    <p>2020年03月28日 00:00</p>
   </a>
 </div>
 
@@ -356,11 +344,29 @@
             
   
   <div class='new-meta-item category'>
-    <a href='/blog/blog/categories/javaweb/springboot/' rel="nofollow">
+    <a href='/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/' rel="nofollow">
       <i class="fas fa-folder-open" aria-hidden="true"></i>
-      <p>javaweb&nbsp;/&nbsp;springboot</p>
+      <p>java&nbsp;/&nbsp;并发</p>
     </a>
   </div>
+
+
+          
+        
+          
+            
+  
+    <div class="new-meta-item browse busuanzi">
+      <a class='notlink'>
+        <i class="fas fa-eye" aria-hidden="true"></i>
+        <p>
+          <span id="busuanzi_value_page_pv">
+            <i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+          </span>
+        </p>
+      </a>
+    </div>
+  
 
 
           
@@ -378,53 +384,187 @@
   </section>
 
 
-  <section class="article typo">
-    <div class="article-entry" itemprop="articleBody">
-      <blockquote>
-<p>校园二手交易网站<br>前后端分离模式</p>
+    <section class="article typo">
+      <div class="article-entry" itemprop="articleBody">
+        <blockquote>
+<p>synchronized</p>
 </blockquote>
+<a id="more"></a>
+<h2 id="底层实现原理"><a href="#底层实现原理" class="headerlink" title="底层实现原理"></a>底层实现原理</h2><p>  synchronized所用的锁存储于Java对象头中，对于同步代码块是使用monitorenter和monitorexit指令完成的，monitorenter是在编译后插入到同步代码前，monitorexit指令插入代码结束处和异常处，对于同步方法则是使用ACC_SYNCHRONIZED标识方法为需要同步的方法。对于每个Java实例对象都会有一个monitor对象，当jVM执行字节码到需要同步的地方时就会判断对象头中synchronized所指向的monitor对象是否上锁，若没有被锁定或者当前线程已经拥有锁该锁的计数器加一（可重入），相应的当jvm执行到monitorexit指令或者退出同步方法的时候计数器减一，直到计数器为0则释放该锁，若已经被锁定则当前线程进入等待或者阻塞，直到锁的释放。<br>  注意：</p>
+<ul>
+<li>synchronized是可重入锁，意味着同一线程可以递归的获取该锁而不会导致死锁</li>
+<li>synchronized作用于方法上是不会被继承</li>
+</ul>
+<h2 id="Mutex-Lock"><a href="#Mutex-Lock" class="headerlink" title="Mutex Lock"></a>Mutex Lock</h2><p>  Monitor锁本质上依赖于操作系统的 Mutex Lock互斥锁来实现的，工作方式如下<br>    1. 申请mutex<br>    2. 如果成功，则持有该mutex<br>    3. 如果失败，则进行spin自旋. spin的过程就是在线等待mutex, 不断发起mutex gets, 直到获得mutex或者达到spin_count限制为止<br>    4. 依据工作模式的不同选择yiled还是sleep<br>    5. 若达到sleep限制或者被主动唤醒或者完成yield, 则重复1)~4)步，直到获得为止</p>
+<p>  由于Java的线程是映射到操作系统的原生线程之上的，如果要阻塞或唤醒一条线程，都需要操作系统来帮忙完成，这就需要从用户态转换到核心态中，因此状态转换需要耗费很多的处理器时间。所以synchronized是Java语言中的一个重量级操作,所以在JDK1.6中加入了对synchrinized的优化</p>
+<h2 id="synchronized优化"><a href="#synchronized优化" class="headerlink" title="synchronized优化"></a>synchronized优化</h2><p>  JDK1.6以后引入了偏向锁、轻量级锁、重量级锁以及锁消除、锁粗话等</p>
+<ul>
+<li>偏向锁：在只有一个线程执行同步块的时候提高性能，根据对象头中MarkWord存储的偏向锁线程ID，当同ID再次进入的时候取消CAS操做来加锁和解锁，    只需要比较线程ID即可，只有在出现竞争（检测到不同的线程ID）的时候进行释放biased lock，而且持有biased lock的线程不会主动的释放锁，当有竞争时首先会检查持有线程是否存活，若不存活则对象变为无锁状态，重偏向为竞争的线程，若持有线程仍存活则将偏向锁升级为轻量级锁，并且由原来持有偏向锁的线程持有轻量级锁，竞争线程进行自旋等待获取轻量级锁</li>
+<li>轻量级锁： 若当前只有一个线程等待，则通过自旋（线程不会进入阻塞而导致用户态和nnei内核态的转换，而是一直向CPU发请求获取锁）等待获取锁，若自旋时间过长或者有新的线程参与竞争则升级为重量级锁</li>
+<li>锁消除： 虚拟机即时编辑器在运行时，对一些“代码上要求同步，但是被检测到不可能存在共享数据竞争”的锁进行消除。</li>
+<li>锁粗化： 如果虚拟机检测到有一串零碎的操作都是对同一对象的加锁，将会把加锁同步的范围扩展（粗化）到整个操作序列的外部。</li>
+</ul>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzI3NzM2OTQ5Mg==&amp;mid=2247484280&amp;idx=1&amp;sn=8de305338c5ab348c3e2a784084e4306&amp;chksm=eb660483dc118d95e9bcde15a01103f818ed2fd399989f36dc2d57740a305e91cf986d4f5a64&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzI3NzM2OTQ5Mg==&amp;mid=2247484280&amp;idx=1&amp;sn=8de305338c5ab348c3e2a784084e4306&amp;chksm=eb660483dc118d95e9bcde15a01103f818ed2fd399989f36dc2d57740a305e91cf986d4f5a64&amp;scene=21#wechat_redirect</a></li>
+</ol>
+
+      </div>
       
-        <div class="readmore">
-          <a href="/blog/projects/2market/" class="flat-box">
-            <i class="fas fa-book-open fa-fw" aria-hidden="true"></i>
-            阅读全文
-          </a>
-        </div>
+      
+        <br>
+        
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-03-28T22:32:14+08:00">
+  <a class='notlink'>
+    <i class="fas fa-clock" aria-hidden="true"></i>
+    <p>更新于 2020年03月28日 22:32</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/blog/blog/tags/java/" rel="nofollow"><i class="fas fa-tag" aria-hidden="true"></i><p>java</p></a></div>
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://ynzh.github.io/blog/java/synchronized/&title=synchronized锁原理总结 | YNZH&summary=
+synchronized
+"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://ynzh.github.io/blog/java/synchronized/&title=synchronized锁原理总结 | YNZH&summary=
+synchronized
+"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=https://ynzh.github.io/blog/java/synchronized/&title=synchronized锁原理总结 | YNZH&summary=
+synchronized
+"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
       
     </div>
-    
-      <div class="full-width auto-padding tags">
-        
-          <a href="/blog/blog/tags/javaweb/" rel="nofollow"><i class="fas fa-tag fa-fw"></i> javaweb</a>
-        
-      </div>
-    
   </section>
-</article>
 
-          </div>
-        
+
       
-    
-  </section>
-  
-    
-    <!-- 根据主题中的设置决定是否在archive中针对摘要部分的MathJax公式加载mathjax.js文件 -->
-    
-    
+      
+          <div class="prev-next">
+              
+              
+                  <section class="next">
+                      <span class="art-item-right" aria-hidden="true">
+                          <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
+                          <h4>
+                              <a href="/blog/life/learn_c1/" rel="prev" title="markdown基本用法">
+                                  
+                                      markdown基本用法
+                                  
+                              </a>
+                          </h4>
+                          
+                              
+                              <h6 class="tags">
+                                  <a class="tag" href="/blog/blog/tags/markdown/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> markdown</a>
+                              </h6>
+                          
+                      </span>
+                  </section>
+              
+          </div>
+      
+    </section>
+  </article>
 
-  
 
 
-    
-  
+  <!-- 显示推荐文章和评论 -->
+
+
+
+  <article class="post white-box comments">
+    <section class="article typo">
+      <h4><i class="fas fa-comments fa-fw" aria-hidden="true"></i>&nbsp;评论</h4>
+      
+      
+      
+        <section id="comments">
+          <div id="gitalk-container"></div>
+        </section>
+      
+      
+    </section>
+  </article>
+
+
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'synchronized锁原理总结',
+      tools: true
+    }
+  </script>
+
 
 </div>
 <aside class='l_side'>
   
     
     
-      
       
         
           
@@ -633,77 +773,6 @@
         
           
           
-            
-              <section class='widget plain'>
-  
-<header class='material'>
-  <div><i class="fas fa-file fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;欢迎光临</div>
-  
-</header>
-
-  <div class='content material'>
-    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script>var getOSAndBrowser=function(){var os=navigator.platform;var userAgent=navigator.userAgent;var info="";var tempArray="";if(os.indexOf("Win")>-1){if(userAgent.indexOf("Windows NT 5.0")>-1){info+="Win2000"}else if(userAgent.indexOf("Windows NT 5.1")>-1){info+="WinXP"}else if(userAgent.indexOf("Windows NT 5.2")>-1){info+="Win2003"}else if(userAgent.indexOf("Windows NT 6.0")>-1){info+="WindowsVista"}else if(userAgent.indexOf("Windows NT 6.1")>-1||userAgent.indexOf("Windows 7")>-1){info+="Win7"}else if(userAgent.indexOf("Windows NT 6.2")>-1||userAgent.indexOf("Windows 8")>-1){info+="Win8"}else if(userAgent.indexOf("Windows NT 6.3")>-1||userAgent.indexOf("Windows 8.1")>-1){info+="Win8.1"}else if(userAgent.indexOf("Windows NT 10.0")>-1||userAgent.indexOf("Windows 10")>-1){info+="Win10"}else{info+="Other"}}else if(os.indexOf("Mac")>-1){info+="Mac"}else if(os.indexOf("X11")>-1){info+="Unix"}else if(os.indexOf("Linux")>-1){info+="Linux"}else{info+="Other"}info+="/";var isOpera=userAgent.indexOf("Opera")>-1;var isIE=userAgent.indexOf("compatible")>-1&&userAgent.indexOf("MSIE")>-1&&!isOpera;var isEdge=userAgent.toLowerCase().indexOf("edge")>-1&&!isIE;var isIE11=(userAgent.toLowerCase().indexOf("trident")>-1&&userAgent.indexOf("rv")>-1);if(/[Ff]irefox(\/\d+\.\d+)/.test(userAgent)){tempArray=/([Ff]irefox)\/(\d+\.\d+)/.exec(userAgent);info+=tempArray[1]+tempArray[2]}else if(isIE){var version="";var reIE=new RegExp("MSIE (\\d+\\.\\d+);");reIE.test(userAgent);var fIEVersion=parseFloat(RegExp["$1"]);if(fIEVersion==7){version="IE7"}else if(fIEVersion==8){version="IE8"}else if(fIEVersion==9){version="IE9"}else if(fIEVersion==10){version="IE10"}else{version="0"}info+=version}else if(isEdge){info+="Edge"}else if(isIE11){info+="IE11"}else if(/[Cc]hrome\/\d+/.test(userAgent)){tempArray=/([Cc]hrome)\/(\d+)/.exec(userAgent);info+=tempArray[1]+tempArray[2]}else if(/[Vv]ersion\/\d+\.\d+\.\d+(\.\d)* *[Ss]afari/.test(userAgent)){tempArray=/[Vv]ersion\/(\d+\.\d+\.\d+)(\.\d)* *([Ss]afari)/.exec(userAgent);info+=tempArray[3]+tempArray[1]}else if(/[Oo]pera.+[Vv]ersion\/\d+\.\d+/.test(userAgent)){tempArray=/([Oo]pera).+[Vv]ersion\/(\d+)\.\d+/.exec(userAgent);info+=tempArray[1]+tempArray[2]}else{info+="unknown"}return info};document.write("欢迎来自"+returnCitySN["cname"]+"的朋友");document.write("<br>您的 IP 是："+returnCitySN["cip"]);document.write("<br>您使用的是："+getOSAndBrowser());</script>
-  </div>
-</section>
-
-            
-          
-        
-          
-          
-            
-              <section class='widget plain'>
-  
-<header class='material'>
-  <div><i class="fas fa-file fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;访客地图</div>
-  
-</header>
-
-  <div class='content material'>
-    <script type="text/javascript" src="//rf.revolvermaps.com/0/0/4.js?i=5f0cvp69u1o&amp;m=0&amp;h=128&amp;c=ff0000&amp;r=10" async="async"></script>
-  </div>
-</section>
-
-            
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-      
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
-        
-          
-          
         
           
           
@@ -712,48 +781,34 @@
           
             
               
-
-
-  <section class='widget music'>
+  <section class='widget toc-wrapper'>
     
 <header class='material'>
-  <div><i class="fas fa-compact-disc fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;最近在听</div>
+  <div><i class="fas fa-list fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;本文目录</div>
   
-    <a class="rightBtn"
-    
-      rel="external nofollow noopener noreferrer"
-    
-    
-      target="_blank"
-    
-    href="https://music.163.com/#/user/home?id=124273232"
-    title="https://music.163.com/#/user/home?id=124273232">
-    <i class="far fa-heart fa-fw"></i></a>
+    <!-- <div class='wrapper'><a class="s-toc rightBtn" rel="external nofollow noopener noreferrer noopener" href="javascript:void(0)" target="_blank"><i class="fas fa-thumbtack fa-fw"></i></a></div> -->
   
 </header>
 
     <div class='content material'>
-      
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.7.0/dist/APlayer.min.css">
-  <div class="aplayer"
-    data-theme="#1BCDFC"
-    
-    
-    data-mode="circulation"
-    data-server="netease"
-    data-type="playlist"
-    data-id="155064682"
-    data-volume="0.7">
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/aplayer@1.7.0/dist/APlayer.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/meting@1.1.0/dist/Meting.min.js"></script>
-
-
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#底层实现原理"><span class="toc-text">底层实现原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mutex-Lock"><span class="toc-text">Mutex Lock</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#synchronized优化"><span class="toc-text">synchronized优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol>
     </div>
   </section>
 
 
             
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
           
         
           
@@ -962,6 +1017,35 @@
           
         
       
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
     
 
   
@@ -1127,6 +1211,23 @@ setInterval("createtime()",250);
 
 
 
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: "8dda6e88e6b8638e8f31",
+      clientSecret: "b031cdcc94205f45e4e89fb171c321e5c851bb6e",
+      repo: "blog",
+      owner: "YNZH",
+      admin: "YNZH",
+      
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+      
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+    gitalk.render('gitalk-container');
+  </script>
 
 
 
