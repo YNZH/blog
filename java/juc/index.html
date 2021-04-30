@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>juc小结 | YNZH</title>
+  
+  
+
+  
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!-- meta -->
+  
+  
+  <meta name='msapplication-TileColor' content='#2b5797'>
+  <meta name='theme-color' content='#ffffff'>
+  
+
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.10.1/css/all.min.css">
+  
+  
+  <link rel='apple-touch-icon' sizes='180x180' href='/blog/apple-touch-icon.png'>
+  <link rel='icon' type='image/png' sizes='32x32' href='/blog/favicon/favicon-32x32.png'>
+  <link rel='icon' type='image/png' sizes='16x16' href='/blog/favicon/favicon-16x16.png'>
+  <link rel='manifest' href='/blog/favicon/site.webmanifest'>
+  <link rel='mask-icon' href='/blog/favicon/safari-pinned-tab.svg' color='#5bbad5'>
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/blog/style.css">
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
+</head>
+
+<body>
+  
+  
+  <div class="cover-wrapper">
+    <cover class='cover post half'>
+      
+        
+  <h1 class='title'>YNZH's Blog</h1>
+
+
+  <div class="m_search">
+    <form name="searchform" class="form u-search-form">
+      <input type="text" class="input u-search-input" placeholder="" />
+      <i class="icon fas fa-search fa-fw"></i>
+    </form>
+  </div>
+
+<div class='menu navgation'>
+  <ul class='h-list'>
+    
+      
+        <li>
+          <a class="nav home" href="/blog/"
+            
+            
+            id="blog">
+            <i class='fas fa-rss fa-fw'></i>&nbsp;主页
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/projects/"
+            
+            
+            id="blogprojects">
+            <i class='fas fa-code-branch fa-fw'></i>&nbsp;项目
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/friends/"
+            
+              rel="nofollow"
+            
+            
+            id="blogfriends">
+            <i class='fas fa-link fa-fw'></i>&nbsp;友链
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/about/"
+            
+              rel="nofollow"
+            
+            
+            id="blogabout">
+            <i class='fas fa-info-circle fa-fw'></i>&nbsp;关于
+          </a>
+        </li>
+      
+    
+  </ul>
+</div>
+
+      
+    </cover>
+    <header class="l_header material">
+  <div id="loading-bar-wrapper">
+    <div id="loading-bar" class="material"></div>
+  </div>
+
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+      <a class="logo flat-box" href='/blog/' >
+        
+          YNZH'S BLOG
+        
+      </a>
+			<div class='menu navgation'>
+				<ul class='h-list'>
+          
+  					
+  						<li>
+								<a class="nav flat-box" href="/blog/"
+                  
+                  
+                  id="blog">
+									<i class='fas fa-grin fa-fw'></i>&nbsp;主页
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/categories/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogcategories">
+									<i class='fas fa-folder-open fa-fw'></i>&nbsp;分类
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/tags/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogtags">
+									<i class='fas fa-hashtag fa-fw'></i>&nbsp;标签
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/archives/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogarchives">
+									<i class='fas fa-archive fa-fw'></i>&nbsp;归档
+								</a>
+							</li>
+      			
+      		
+				</ul>
+			</div>
+
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="搜索" />
+						<i class="icon fas fa-search fa-fw"></i>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a class="fas fa-search fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+				
+				<li class='s-menu'><a class="fas fa-bars fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+			</ul>
+		</div>
+
+		<div class='nav-sub container container--flex'>
+			<a class="logo flat-box"></a>
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a class="flat-btn fas fa-comments fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+        
+          <li class='s-toc'><a class="flat-btn fas fa-list fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+        
+			</ul>
+		</div>
+	</div>
+</header>
+	<aside class="menu-phone">
+    <header>
+		<nav class="menu navgation">
+      <ul>
+        
+          
+            <li>
+							<a class="nav flat-box" href="/blog/"
+                
+                
+                id="blog">
+								<i class='fas fa-clock fa-fw'></i>&nbsp;近期文章
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/blog/archives/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogblogarchives">
+								<i class='fas fa-archive fa-fw'></i>&nbsp;文章归档
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/projects/"
+                
+                
+                id="blogprojects">
+								<i class='fas fa-code-branch fa-fw'></i>&nbsp;开源项目
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/friends/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogfriends">
+								<i class='fas fa-link fa-fw'></i>&nbsp;我的友链
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="https://xaoxuu.com/wiki/material-x/"
+                
+                  rel="nofollow"
+                
+                
+                id="https:xaoxuu.comwikimaterial-x">
+								<i class='fas fa-book fa-fw'></i>&nbsp;主题文档
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/about/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogabout">
+								<i class='fas fa-info-circle fa-fw'></i>&nbsp;关于小站
+							</a>
+            </li>
+          
+       
+      </ul>
+		</nav>
+    </header>
+	</aside>
+<script>setLoadingBarProgress(40);</script>
+
+  </div>
+
+
+  <div class="l_body">
+    <div class='body-wrapper'>
+      <div class='l_main'>
+  
+
+  <article id="post" class="post white-box article-type-post" itemscope itemprop="blogPost">
+    
+
+
+  <section class='meta'>
+    
+    
+    <div class="meta" id="header-meta">
+      
+        
+  
+    <h1 class="title">
+      <a href="/blog/java/juc/">
+        juc小结
+      </a>
+    </h1>
+  
+
+
+      
+      <div class='new-meta-box'>
+        
+          
+        
+          
+            
+  <div class='new-meta-item author'>
+    
+      <a href="https://ynzh.github.io/blog" rel="nofollow">
+        
+          <i class="fas fa-user" aria-hidden="true"></i>
+        
+        <p>高晋峰</p>
+      </a>
+    
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+    <p>2020年04月27日 21:05</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  
+  <div class='new-meta-item category'>
+    <a href='/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/' rel="nofollow">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <p>java&nbsp;/&nbsp;并发</p>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+  
+    <div class="new-meta-item browse busuanzi">
+      <a class='notlink'>
+        <i class="fas fa-eye" aria-hidden="true"></i>
+        <p>
+          <span id="busuanzi_value_page_pv">
+            <i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+          </span>
+        </p>
+      </a>
+    </div>
+  
+
+
+          
+        
+          
+            
+
+          
+        
+      </div>
+      
+        <hr>
+      
+    </div>
+  </section>
+
+
+    <section class="article typo">
+      <div class="article-entry" itemprop="articleBody">
+        <blockquote>
+<p>java.util.concurrent.* 总结</p>
+<a id="more"></a>
+</blockquote>
+<h2 id="AQS（模板方法设计模式）"><a href="#AQS（模板方法设计模式）" class="headerlink" title="AQS（模板方法设计模式）"></a>AQS（模板方法设计模式）</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;@link #tryAcquire&#125;</span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;@link #tryRelease&#125;</span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;@link #tryAcquireShared&#125;</span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;@link #tryReleaseShared&#125;</span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;@link #isHeldExclusively&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>CLH队列</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Node&#123;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="keyword">int</span> waitStatus;</span><br><span class="line">    <span class="keyword">volatile</span> Node prev;</span><br><span class="line">    <span class="keyword">volatile</span> Node next;</span><br><span class="line">    <span class="keyword">volatile</span> Thread thread;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">*      +------+  prev  +-----+        +-----+</span><br><span class="line">* head |      | &lt;----&gt; |     | &lt;----&gt; |     |  tail</span><br><span class="line">*      +------+  next  +-----+        +-----+</span><br></pre></td></tr></table></figure>
+
+<h2 id="锁（LockSupport）"><a href="#锁（LockSupport）" class="headerlink" title="锁（LockSupport）"></a>锁（LockSupport）</h2><h3 id="ReentrantLock："><a href="#ReentrantLock：" class="headerlink" title="ReentrantLock："></a>ReentrantLock：</h3><h3 id="ReentrantReadWriteLock"><a href="#ReentrantReadWriteLock" class="headerlink" title="ReentrantReadWriteLock :"></a>ReentrantReadWriteLock :</h3><p>锁降级（在加写锁之后可以加读锁，但是读锁不可以加写锁，缓存击穿解决方案）</p>
+<h3 id="CountDownLatch："><a href="#CountDownLatch：" class="headerlink" title="CountDownLatch："></a>CountDownLatch：</h3><p>countdown则减一，await等到倒计时为0的时候开始行运行，否则阻塞。底层使用AQS实现</p>
+<h3 id="Semaphore："><a href="#Semaphore：" class="headerlink" title="Semaphore："></a>Semaphore：</h3><p>有N个资源可以被抢占，每当没有资源的时候线程阻塞，否则拿到资源，底层使用AQS实现的</p>
+<h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>在Hystrix中大量使用得到。例如最多同时支持5000个请求，可以设置资源数为5000，当同时有更多的请求来临时可以阻塞从而达到<strong>限流</strong>的效果。</p>
+<h3 id="CyclicBarrier"><a href="#CyclicBarrier" class="headerlink" title="CyclicBarrier"></a>CyclicBarrier</h3><p>循环栏杆，每次到栏杆可以运行一个Runnable的action，注意是可以<strong>循环</strong>的，<strong>底层使用ReentranLock的Condition</strong>（wait，notify的代替可以灵活的按条件分类）机制实现的</p>
+<h2 id="并发容器"><a href="#并发容器" class="headerlink" title="并发容器"></a>并发容器</h2><p>HashMap</p>
+<h3 id="ConcurrentHashMap："><a href="#ConcurrentHashMap：" class="headerlink" title="ConcurrentHashMap："></a>ConcurrentHashMap：</h3><p>1.7segment（继承ReentrantLock）数组实现线程安全，</p>
+<p>1.8CAS+Synchronized实现线程安全</p>
+<h3 id="ConcurrentSkipListMap："><a href="#ConcurrentSkipListMap：" class="headerlink" title="ConcurrentSkipListMap："></a>ConcurrentSkipListMap：</h3><p><strong>有序的</strong>，线程安全的 代替红黑树的实现，</p>
+<h3 id="ConcurrentSkipListSet："><a href="#ConcurrentSkipListSet：" class="headerlink" title="ConcurrentSkipListSet："></a>ConcurrentSkipListSet：</h3><h3 id="CopyOnWriteArrayList："><a href="#CopyOnWriteArrayList：" class="headerlink" title="CopyOnWriteArrayList："></a>CopyOnWriteArrayList：</h3><p>占用两块内存写的时候。</p>
+<h2 id="同步队列"><a href="#同步队列" class="headerlink" title="同步队列"></a>同步队列</h2><p><img src="C:%5CUsers%5CGJF%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20200427213447351.png" alt="image-20200427213447351"></p>
+<p><strong>带有Blocking的全部使用ReentrantLock实现，带有Cocurrent的大部分使用CAS的实现。</strong></p>
+<h3 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h3><p>必须指定大小，底层<strong>ReentrantLock</strong></p>
+<h3 id="LinkedBlockingQueue"><a href="#LinkedBlockingQueue" class="headerlink" title="LinkedBlockingQueue"></a>LinkedBlockingQueue</h3><p>最大容量Integer.MAX_VALUE，</p>
+<h3 id="ConcurrentLinkedQueue-ConcurrentLinkedDeque"><a href="#ConcurrentLinkedQueue-ConcurrentLinkedDeque" class="headerlink" title="ConcurrentLinkedQueue/ConcurrentLinkedDeque"></a>ConcurrentLinkedQueue/ConcurrentLinkedDeque</h3><p><strong>底层CAS</strong>，容量<strong>无限大</strong></p>
+<h3 id="SynchronousQueue-数据同步交换的队列"><a href="#SynchronousQueue-数据同步交换的队列" class="headerlink" title="SynchronousQueue 数据同步交换的队列"></a>SynchronousQueue 数据同步交换的队列</h3><p>奇葩队列,没有实际存储的空间，必须put一个take一个</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> ThreadPoolExecutor(<span class="number">0</span>, Integer.MAX_VALUE,</span><br><span class="line">                       <span class="number">60L</span>, TimeUnit.SECONDS,</span><br><span class="line">                       <span class="keyword">new</span> SynchronousQueue&lt;Runnable&gt;(),</span><br><span class="line">                       threadFactory);</span><br></pre></td></tr></table></figure>
+
+<h3 id="DelayQueue-延时队列"><a href="#DelayQueue-延时队列" class="headerlink" title="DelayQueue 延时队列"></a>DelayQueue 延时队列</h3><p>可以使放入队列的元素在指定的延时后才被消费者取出，元素需要实现Delayed接口。</p>
+<h2 id="ForkJoin"><a href="#ForkJoin" class="headerlink" title="ForkJoin"></a>ForkJoin</h2><h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>类似与MapReduce模式，通过Pool建立一个线程池，将任务拆分（fork）交给pool中的线程完成，递归的划分到可接受的最小任务，然后将各个fork的任务join到一起返回。 <strong>工作原理</strong>（<strong>任务窃取</strong>）每个线程有自己的一个任务队列，不同于线程池（只有一个同步队列），当某个线程的任务队列结束之后可以<strong>窃取</strong>其他线程队列的任务，充分发挥多核cpu的优点</p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>划分的子任务不能为具有阻塞性的任务，不然整个大任务的完成就会阻塞。可以用于<strong>parallelSort</strong>的排序等非阻塞的场景。</p>
+<h3 id="场景-1"><a href="#场景-1" class="headerlink" title="场景"></a>场景</h3><p><strong>Arrays.parallelSort()</strong>等类似的非阻塞的场景</p>
+
+      </div>
+      
+      
+        <br>
+        
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-05-08T10:11:40+08:00">
+  <a class='notlink'>
+    <i class="fas fa-clock" aria-hidden="true"></i>
+    <p>更新于 2020年05月08日 10:11</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/blog/blog/tags/java/" rel="nofollow"><i class="fas fa-tag" aria-hidden="true"></i><p>java</p></a></div>
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://ynzh.github.io/blog/java/juc/&title=juc小结 | YNZH&summary=
+java.util.concurrent.* 总结"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://ynzh.github.io/blog/java/juc/&title=juc小结 | YNZH&summary=
+java.util.concurrent.* 总结"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=https://ynzh.github.io/blog/java/juc/&title=juc小结 | YNZH&summary=
+java.util.concurrent.* 总结"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+      
+      
+          <div class="prev-next">
+              
+                  <section class="prev">
+                      <span class="art-item-left">
+                          <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
+                          <h4>
+                              <a href="/blog/java/KCode/" rel="prev" title="java/KCode">
+                                
+                                    java/KCode
+                                
+                              </a>
+                          </h4>
+                          
+                      </span>
+                  </section>
+              
+              
+                  <section class="next">
+                      <span class="art-item-right" aria-hidden="true">
+                          <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
+                          <h4>
+                              <a href="/blog/JD_Java%E5%AE%9E%E4%B9%A0%E4%B8%80%E9%9D%A2%E9%9D%A2%E8%AF%95%E5%8E%86%E5%B9%B4/" rel="prev" title="JD_Java实习一面面试历年">
+                                  
+                                      JD_Java实习一面面试历年
+                                  
+                              </a>
+                          </h4>
+                          
+                      </span>
+                  </section>
+              
+          </div>
+      
+    </section>
+  </article>
+
+
+
+  <!-- 显示推荐文章和评论 -->
+
+
+
+  <article class="post white-box comments">
+    <section class="article typo">
+      <h4><i class="fas fa-comments fa-fw" aria-hidden="true"></i>&nbsp;评论</h4>
+      
+      
+      
+        <section id="comments">
+          <div id="gitalk-container"></div>
+        </section>
+      
+      
+    </section>
+  </article>
+
+
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'juc小结',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+    
+    
+      
+        
+          
+          
+            
+              <section class='widget author'>
+  <div class='content material'>
+    
+      <div class='avatar'>
+        <img class='avatar' src='http://ww1.sinaimg.cn/large/005T5Tjily1g9pbbcbh27j30qn0qndhb.jpg'/>
+      </div>
+    
+    
+      <div class='text'>
+        
+        
+        
+          <p><span id="jinrishici-sentence">YNZH</span></p>
+          <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+        
+      </div>
+    
+    
+      <div class="social-wrapper">
+        
+          
+            <a href="/blog/atom.xml"
+              class="social fas fa-rss flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="/blog/mailto:hi@gaojinfeng.com"
+              class="social fas fa-envelope flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://github.com/YNZH"
+              class="social fab fa-github flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://music.163.com/#/user/home?id=124273232"
+              class="social fas fa-headphones-alt flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+      </div>
+    
+  </div>
+</section>
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              <section class='widget grid'>
+  
+<header class='material'>
+  <div><i class="fas fa-map-signs fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;站内导航</div>
+  
+</header>
+
+  <div class='content material'>
+    <ul class="grid navgation">
+      
+        <li><a class="flat-box" title="/blog/" href="/blog/"
+          
+          
+          id="blog">
+          
+            <i class="fas fa-clock fa-fw" aria-hidden="true"></i>
+          
+          近期文章
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/blog/archives/" href="/blog/blog/archives/"
+          
+            rel="nofollow"
+          
+          
+          id="blogblogarchives">
+          
+            <i class="fas fa-archive fa-fw" aria-hidden="true"></i>
+          
+          文章归档
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/projects/" href="/blog/projects/"
+          
+          
+          id="blogprojects">
+          
+            <i class="fas fa-code-branch fa-fw" aria-hidden="true"></i>
+          
+          开源项目
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/friends/" href="/blog/friends/"
+          
+            rel="nofollow"
+          
+          
+          id="blogfriends">
+          
+            <i class="fas fa-link fa-fw" aria-hidden="true"></i>
+          
+          我的友链
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/life/" href="/blog/life/"
+          
+          
+          id="bloglife">
+          
+            <i class="fas fa-book fa-fw" aria-hidden="true"></i>
+          
+          日常生活
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/about/" href="/blog/about/"
+          
+            rel="nofollow"
+          
+          
+          id="blogabout">
+          
+            <i class="fas fa-info-circle fa-fw" aria-hidden="true"></i>
+          
+          关于小站
+        </a></li>
+      
+    </ul>
+  </div>
+</section>
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget toc-wrapper'>
+    
+<header class='material'>
+  <div><i class="fas fa-list fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;本文目录</div>
+  
+    <!-- <div class='wrapper'><a class="s-toc rightBtn" rel="external nofollow noopener noreferrer noopener" href="javascript:void(0)" target="_blank"><i class="fas fa-thumbtack fa-fw"></i></a></div> -->
+  
+</header>
+
+    <div class='content material'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AQS（模板方法设计模式）"><span class="toc-text">AQS（模板方法设计模式）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#锁（LockSupport）"><span class="toc-text">锁（LockSupport）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ReentrantLock："><span class="toc-text">ReentrantLock：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ReentrantReadWriteLock"><span class="toc-text">ReentrantReadWriteLock :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CountDownLatch："><span class="toc-text">CountDownLatch：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Semaphore："><span class="toc-text">Semaphore：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#场景"><span class="toc-text">场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CyclicBarrier"><span class="toc-text">CyclicBarrier</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并发容器"><span class="toc-text">并发容器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ConcurrentHashMap："><span class="toc-text">ConcurrentHashMap：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ConcurrentSkipListMap："><span class="toc-text">ConcurrentSkipListMap：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ConcurrentSkipListSet："><span class="toc-text">ConcurrentSkipListSet：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CopyOnWriteArrayList："><span class="toc-text">CopyOnWriteArrayList：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步队列"><span class="toc-text">同步队列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ArrayBlockingQueue"><span class="toc-text">ArrayBlockingQueue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LinkedBlockingQueue"><span class="toc-text">LinkedBlockingQueue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ConcurrentLinkedQueue-ConcurrentLinkedDeque"><span class="toc-text">ConcurrentLinkedQueue/ConcurrentLinkedDeque</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SynchronousQueue-数据同步交换的队列"><span class="toc-text">SynchronousQueue 数据同步交换的队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DelayQueue-延时队列"><span class="toc-text">DelayQueue 延时队列</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ForkJoin"><span class="toc-text">ForkJoin</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原理"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#场景-1"><span class="toc-text">场景</span></a></li></ol></li></ol>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget category'>
+    
+<header class='material'>
+  <div><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;文章分类</div>
+  
+    <a class="rightBtn"
+    
+      rel="nofollow"
+    
+    
+    href="/blog/blog/categories/"
+    title="blog/categories/">
+    <i class="fas fa-expand-arrows-alt fa-fw"></i></a>
+  
+</header>
+
+    <div class='content material'>
+      <ul class="entry">
+        
+          <li><a class="flat-box" title="/blog/blog/categories/Algorithms/" href="/blog/blog/categories/Algorithms/"><div class='name'>Algorithms</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Dynamic-program/" href="/blog/blog/categories/Algorithms/Dynamic-program/"><div class='name'>Dynamic program</div><div class='badge'>(4)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Interval-Overlap/" href="/blog/blog/categories/Algorithms/Interval-Overlap/"><div class='name'>Interval Overlap</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/CNN/" href="/blog/blog/categories/CNN/"><div class='name'>CNN</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/MapReduce/" href="/blog/blog/categories/MapReduce/"><div class='name'>MapReduce</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/MapReduce/Hash/" href="/blog/blog/categories/MapReduce/Hash/"><div class='name'>Hash</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/java/" href="/blog/blog/categories/java/"><div class='name'>java</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/jvm/" href="/blog/blog/categories/java/jvm/"><div class='name'>jvm</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/" href="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/"><div class='name'>并发</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" href="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><div class='name'>设计模式</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/markdown/" href="/blog/blog/categories/markdown/"><div class='name'>markdown</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/os/" href="/blog/blog/categories/os/"><div class='name'>os</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/os/IPC/" href="/blog/blog/categories/os/IPC/"><div class='name'>IPC</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/pytorch/" href="/blog/blog/categories/pytorch/"><div class='name'>pytorch</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/tensorflow/" href="/blog/blog/categories/tensorflow/"><div class='name'>tensorflow</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><div class='name'>数据库</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/"><div class='name'>B+树</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/"><div class='name'>缓存</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/"><div class='name'>redis</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><div class='name'>计算机网络</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/"><div class='name'>TCP协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/"><div class='name'>http协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/"><div class='name'>socket</div><div class='badge'>(1)</div></a></li>
+        
+      </ul>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget tagcloud'>
+    
+<header class='material'>
+  <div><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;热门标签</div>
+  
+    <a class="rightBtn"
+    
+      rel="nofollow"
+    
+    
+    href="/blog/blog/tags/"
+    title="blog/tags/">
+    <i class="fas fa-expand-arrows-alt fa-fw"></i></a>
+  
+</header>
+
+    <div class='content material'>
+      <a href="/blog/blog/tags/CNN/" style="font-size: 14px; color: #999">CNN</a> <a href="/blog/blog/tags/algorithms/" style="font-size: 24px; color: #555">algorithms</a> <a href="/blog/blog/tags/java/" style="font-size: 19px; color: #777">java</a> <a href="/blog/blog/tags/markdown/" style="font-size: 14px; color: #999">markdown</a>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              <section class='widget list'>
+  
+<header class='material'>
+  <div><i class="fas fa-thumbs-up fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;常用连接</div>
+  
+</header>
+
+  <div class='content material'>
+    <ul class="entry">
+      
+        <li><a class="flat-box" title="https://baidu.com/" href="https://baidu.com/"
+          
+          
+          >
+          <div class='name'>
+            
+              <i class=" fa-fw" aria-hidden="true"></i>
+            
+            &nbsp;&nbsp;百度
+          </div>
+          
+        </a></li>
+      
+        <li><a class="flat-box" title="https://www.googlebridge.com/" href="https://www.googlebridge.com/"
+          
+          
+          >
+          <div class='name'>
+            
+              <i class=" fa-fw" aria-hidden="true"></i>
+            
+            &nbsp;&nbsp;谷歌
+          </div>
+          
+        </a></li>
+      
+    </ul>
+  </div>
+</section>
+
+            
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+    
+
+  
+</aside>
+
+<footer id="footer" class="clearfix">
+  
+  
+    <div class="social-wrapper">
+      
+        
+          <a href="/blog/atom.xml"
+            class="social fas fa-rss flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="/blog/mailto:hi@gaojinfeng.com"
+            class="social fas fa-envelope flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="https://github.com/YNZH"
+            class="social fab fa-github flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="https://music.163.com/#/user/home?id=124273232"
+            class="social fas fa-headphones-alt flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+    </div>
+  
+  <br>
+  <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+</div>
+  <div>
+    本站使用
+    <a href="https://xaoxuu.com/wiki/material-x/" target="_blank" class="codename">Material X</a>
+    作为主题
+    
+      ，
+      总访问量为
+      <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+      次
+    
+    。
+  </div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date(); 
+    function createtime() { 
+        var grt= new Date("12/15/2019 15:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+        now.setTime(now.getTime()+250); 
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+</footer>
+<script>setLoadingBarProgress(80);</script>
+
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+
+  <script>
+    var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+    var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+    var ALGOLIA_API_KEY = "";
+    var ALGOLIA_APP_ID = "";
+    var ALGOLIA_INDEX_NAME = "";
+    var AZURE_SERVICE_NAME = "";
+    var AZURE_INDEX_NAME = "";
+    var AZURE_QUERY_KEY = "";
+    var BAIDU_API_ID = "";
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/blog/"||"/";
+    if(!ROOT.endsWith('/'))ROOT += '/';
+  </script>
+
+<script src="//instant.page/1.2.2" type="module" integrity="sha384-2xV8M5griQmzyiY3CDqh1dn4z3llDVqZDqzjzcY+jCBCk/a5fXJmuZ/40JJAPeoU"></script>
+
+
+  <script async src="https://cdn.jsdelivr.net/npm/scrollreveal@4.0.5/dist/scrollreveal.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      const $reveal = $('.reveal');
+      if ($reveal.length === 0) return;
+      const sr = ScrollReveal({ distance: 0 });
+      sr.reveal('.reveal');
+    });
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+  
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        if ('.cover') {
+          $('.cover').backstretch(
+          ["https://img.vim-cn.com/29/91197b04c13f512f734a76d4ac422d89dbe229.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xepty1hqj30ku0iiwfl.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xess9xc3j31jk0v979k.jpg"],
+          {
+            duration: "6000",
+            fade: "2500"
+          });
+        } else {
+          $.backstretch(
+          ["https://img.vim-cn.com/29/91197b04c13f512f734a76d4ac422d89dbe229.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xepty1hqj30ku0iiwfl.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xess9xc3j31jk0v979k.jpg"],
+          {
+            duration: "6000",
+            fade: "2500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: "8dda6e88e6b8638e8f31",
+      clientSecret: "b031cdcc94205f45e4e89fb171c321e5c851bb6e",
+      repo: "blog",
+      owner: "YNZH",
+      admin: "YNZH",
+      
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+      
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+    gitalk.render('gitalk-container');
+  </script>
+
+
+
+
+
+  <script src="/blog/js/app.js"></script>
+
+
+  <script src="/blog/js/search.js"></script>
+
+
+
+
+<!-- 复制 -->
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  let COPY_SUCCESS = "复制成功";
+  let COPY_FAILURE = "复制失败";
+  /*页面载入完成后，创建复制按钮*/
+  !function (e, t, a) {
+    /* code */
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '  <i class="fa fa-copy"></i><span>复制</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+
+      clipboard.on('success', function(e) {
+        //您可以加入成功提示
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        success_prompt(COPY_SUCCESS);
+        e.clearSelection();
+      });
+      clipboard.on('error', function(e) {
+        //您可以加入失败提示
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+        fail_prompt(COPY_FAILURE);
+      });
+    }
+    initCopyCode();
+
+  }(window, document);
+
+  /**
+   * 弹出式提示框，默认1.5秒自动消失
+   * @param message 提示信息
+   * @param style 提示样式，有alert-success、alert-danger、alert-warning、alert-info
+   * @param time 消失时间
+   */
+  var prompt = function (message, style, time)
+  {
+      style = (style === undefined) ? 'alert-success' : style;
+      time = (time === undefined) ? 1500 : time*1000;
+      $('<div>')
+          .appendTo('body')
+          .addClass('alert ' + style)
+          .html(message)
+          .show()
+          .delay(time)
+          .fadeOut();
+  };
+
+  // 成功提示
+  var success_prompt = function(message, time)
+  {
+      prompt(message, 'alert-success', time);
+  };
+
+  // 失败提示
+  var fail_prompt = function(message, time)
+  {
+      prompt(message, 'alert-danger', time);
+  };
+
+  // 提醒
+  var warning_prompt = function(message, time)
+  {
+      prompt(message, 'alert-warning', time);
+  };
+
+  // 信息提示
+  var info_prompt = function(message, time)
+  {
+      prompt(message, 'alert-info', time);
+  };
+
+</script>
+
+
+<!-- fancybox -->
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  let LAZY_LOAD_IMAGE = "";
+  $(".article-entry").find("fancybox").find("img").each(function () {
+      var element = document.createElement("a");
+      $(element).attr("data-fancybox", "gallery");
+      $(element).attr("href", $(this).attr("src"));
+      /* 图片采用懒加载处理时,
+       * 一般图片标签内会有个属性名来存放图片的真实地址，比如 data-original,
+       * 那么此处将原本的属性名src替换为对应属性名data-original,
+       * 修改如下
+       */
+       if (LAZY_LOAD_IMAGE) {
+         $(element).attr("href", $(this).attr("data-original"));
+       }
+      $(this).wrap(element);
+  });
+</script>
+
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>

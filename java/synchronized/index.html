@@ -393,7 +393,7 @@
 <h2 id="底层实现原理"><a href="#底层实现原理" class="headerlink" title="底层实现原理"></a>底层实现原理</h2><p>  synchronized所用的锁存储于Java对象头中，对于同步代码块是使用monitorenter和monitorexit指令完成的，monitorenter是在编译后插入到同步代码前，monitorexit指令插入代码结束处和异常处，对于同步方法则是使用ACC_SYNCHRONIZED标识方法为需要同步的方法。对于每个Java实例对象都会有一个monitor对象，当jVM执行字节码到需要同步的地方时就会判断对象头中synchronized所指向的monitor对象是否上锁，若没有被锁定或者当前线程已经拥有锁该锁的计数器加一（可重入），相应的当jvm执行到monitorexit指令或者退出同步方法的时候计数器减一，直到计数器为0则释放该锁，若已经被锁定则当前线程进入等待或者阻塞，直到锁的释放。<br>  注意：</p>
 <ul>
 <li>synchronized是可重入锁，意味着同一线程可以递归的获取该锁而不会导致死锁</li>
-<li>synchronized作用于方法上是不会被继承</li>
+<li>synchronized<strong>作用于方法上是不会被继承</strong></li>
 </ul>
 <h2 id="Mutex-Lock"><a href="#Mutex-Lock" class="headerlink" title="Mutex Lock"></a>Mutex Lock</h2><p>  Monitor锁本质上依赖于操作系统的 Mutex Lock互斥锁来实现的，工作方式如下<br>    1. 申请mutex<br>    2. 如果成功，则持有该mutex<br>    3. 如果失败，则进行spin自旋. spin的过程就是在线等待mutex, 不断发起mutex gets, 直到获得mutex或者达到spin_count限制为止<br>    4. 依据工作模式的不同选择yiled还是sleep<br>    5. 若达到sleep限制或者被主动唤醒或者完成yield, 则重复1)~4)步，直到获得为止</p>
 <p>  由于Java的线程是映射到操作系统的原生线程之上的，如果要阻塞或唤醒一条线程，都需要操作系统来帮忙完成，这就需要从用户态转换到核心态中，因此状态转换需要耗费很多的处理器时间。所以synchronized是Java语言中的一个重量级操作,所以在JDK1.6中加入了对synchrinized的优化</p>
@@ -419,10 +419,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-03-28T22:35:27+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-06-02T08:38:03+08:00">
   <a class='notlink'>
     <i class="fas fa-clock" aria-hidden="true"></i>
-    <p>更新于 2020年03月28日 22:35</p>
+    <p>更新于 2020年06月02日 08:38</p>
   </a>
 </div>
 
@@ -497,6 +497,25 @@ synchronized
       
       
           <div class="prev-next">
+              
+                  <section class="prev">
+                      <span class="art-item-left">
+                          <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
+                          <h4>
+                              <a href="/blog/java/design_pattern/" rel="prev" title="设计模式总结">
+                                
+                                    设计模式总结
+                                
+                              </a>
+                          </h4>
+                          
+                              
+                              <h6 class="tags">
+                                  <a class="tag" href="/blog/blog/tags/java/"><i class="fas fa-tag fa-fw" aria-hidden="true"></i> java</a>
+                              </h6>
+                          
+                      </span>
+                  </section>
               
               
                   <section class="next">
@@ -854,23 +873,51 @@ synchronized
     <div class='content material'>
       <ul class="entry">
         
+          <li><a class="flat-box" title="/blog/blog/categories/Algorithms/" href="/blog/blog/categories/Algorithms/"><div class='name'>Algorithms</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Dynamic-program/" href="/blog/blog/categories/Algorithms/Dynamic-program/"><div class='name'>Dynamic program</div><div class='badge'>(4)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Interval-Overlap/" href="/blog/blog/categories/Algorithms/Interval-Overlap/"><div class='name'>Interval Overlap</div><div class='badge'>(1)</div></a></li>
+        
           <li><a class="flat-box" title="/blog/blog/categories/CNN/" href="/blog/blog/categories/CNN/"><div class='name'>CNN</div><div class='badge'>(1)</div></a></li>
         
-          <li><a class="flat-box" title="/blog/blog/categories/java/" href="/blog/blog/categories/java/"><div class='name'>java</div><div class='badge'>(1)</div></a></li>
+          <li><a class="flat-box" title="/blog/blog/categories/MapReduce/" href="/blog/blog/categories/MapReduce/"><div class='name'>MapReduce</div><div class='badge'>(1)</div></a></li>
         
-          <li><a class="flat-box child" title="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/" href="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/"><div class='name'>并发</div><div class='badge'>(1)</div></a></li>
+          <li><a class="flat-box child" title="/blog/blog/categories/MapReduce/Hash/" href="/blog/blog/categories/MapReduce/Hash/"><div class='name'>Hash</div><div class='badge'>(1)</div></a></li>
         
-          <li><a class="flat-box" title="/blog/blog/categories/javaweb/" href="/blog/blog/categories/javaweb/"><div class='name'>javaweb</div><div class='badge'>(1)</div></a></li>
+          <li><a class="flat-box" title="/blog/blog/categories/java/" href="/blog/blog/categories/java/"><div class='name'>java</div><div class='badge'>(5)</div></a></li>
         
-          <li><a class="flat-box child" title="/blog/blog/categories/javaweb/springboot/" href="/blog/blog/categories/javaweb/springboot/"><div class='name'>springboot</div><div class='badge'>(1)</div></a></li>
+          <li><a class="flat-box child" title="/blog/blog/categories/java/jvm/" href="/blog/blog/categories/java/jvm/"><div class='name'>jvm</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/" href="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/"><div class='name'>并发</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" href="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><div class='name'>设计模式</div><div class='badge'>(1)</div></a></li>
         
           <li><a class="flat-box" title="/blog/blog/categories/markdown/" href="/blog/blog/categories/markdown/"><div class='name'>markdown</div><div class='badge'>(1)</div></a></li>
         
-          <li><a class="flat-box" title="/blog/blog/categories/os/" href="/blog/blog/categories/os/"><div class='name'>os</div><div class='badge'>(1)</div></a></li>
+          <li><a class="flat-box" title="/blog/blog/categories/os/" href="/blog/blog/categories/os/"><div class='name'>os</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/os/IPC/" href="/blog/blog/categories/os/IPC/"><div class='name'>IPC</div><div class='badge'>(1)</div></a></li>
         
           <li><a class="flat-box" title="/blog/blog/categories/pytorch/" href="/blog/blog/categories/pytorch/"><div class='name'>pytorch</div><div class='badge'>(1)</div></a></li>
         
           <li><a class="flat-box" title="/blog/blog/categories/tensorflow/" href="/blog/blog/categories/tensorflow/"><div class='name'>tensorflow</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><div class='name'>数据库</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/"><div class='name'>B+树</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/"><div class='name'>缓存</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/"><div class='name'>redis</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><div class='name'>计算机网络</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/"><div class='name'>TCP协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/"><div class='name'>http协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/"><div class='name'>socket</div><div class='badge'>(1)</div></a></li>
         
       </ul>
     </div>
@@ -930,7 +977,7 @@ synchronized
 </header>
 
     <div class='content material'>
-      <a href="/blog/blog/tags/CNN/" style="font-size: 14px; color: #999">CNN</a> <a href="/blog/blog/tags/algorithms/" style="font-size: 24px; color: #555">algorithms</a> <a href="/blog/blog/tags/java/" style="font-size: 14px; color: #999">java</a> <a href="/blog/blog/tags/javaweb/" style="font-size: 14px; color: #999">javaweb</a> <a href="/blog/blog/tags/markdown/" style="font-size: 14px; color: #999">markdown</a>
+      <a href="/blog/blog/tags/CNN/" style="font-size: 14px; color: #999">CNN</a> <a href="/blog/blog/tags/algorithms/" style="font-size: 24px; color: #555">algorithms</a> <a href="/blog/blog/tags/java/" style="font-size: 19px; color: #777">java</a> <a href="/blog/blog/tags/markdown/" style="font-size: 14px; color: #999">markdown</a>
     </div>
   </section>
 

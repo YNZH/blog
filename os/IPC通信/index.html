@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>IPC——进程间通信 | YNZH</title>
+  
+  
+
+  
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!-- meta -->
+  
+  
+  <meta name='msapplication-TileColor' content='#2b5797'>
+  <meta name='theme-color' content='#ffffff'>
+  
+
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.10.1/css/all.min.css">
+  
+  
+  <link rel='apple-touch-icon' sizes='180x180' href='/blog/apple-touch-icon.png'>
+  <link rel='icon' type='image/png' sizes='32x32' href='/blog/favicon/favicon-32x32.png'>
+  <link rel='icon' type='image/png' sizes='16x16' href='/blog/favicon/favicon-16x16.png'>
+  <link rel='manifest' href='/blog/favicon/site.webmanifest'>
+  <link rel='mask-icon' href='/blog/favicon/safari-pinned-tab.svg' color='#5bbad5'>
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/blog/style.css">
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
+</head>
+
+<body>
+  
+  
+  <div class="cover-wrapper">
+    <cover class='cover post half'>
+      
+        
+  <h1 class='title'>YNZH's Blog</h1>
+
+
+  <div class="m_search">
+    <form name="searchform" class="form u-search-form">
+      <input type="text" class="input u-search-input" placeholder="" />
+      <i class="icon fas fa-search fa-fw"></i>
+    </form>
+  </div>
+
+<div class='menu navgation'>
+  <ul class='h-list'>
+    
+      
+        <li>
+          <a class="nav home" href="/blog/"
+            
+            
+            id="blog">
+            <i class='fas fa-rss fa-fw'></i>&nbsp;主页
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/projects/"
+            
+            
+            id="blogprojects">
+            <i class='fas fa-code-branch fa-fw'></i>&nbsp;项目
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/friends/"
+            
+              rel="nofollow"
+            
+            
+            id="blogfriends">
+            <i class='fas fa-link fa-fw'></i>&nbsp;友链
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/about/"
+            
+              rel="nofollow"
+            
+            
+            id="blogabout">
+            <i class='fas fa-info-circle fa-fw'></i>&nbsp;关于
+          </a>
+        </li>
+      
+    
+  </ul>
+</div>
+
+      
+    </cover>
+    <header class="l_header material">
+  <div id="loading-bar-wrapper">
+    <div id="loading-bar" class="material"></div>
+  </div>
+
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+      <a class="logo flat-box" href='/blog/' >
+        
+          YNZH'S BLOG
+        
+      </a>
+			<div class='menu navgation'>
+				<ul class='h-list'>
+          
+  					
+  						<li>
+								<a class="nav flat-box" href="/blog/"
+                  
+                  
+                  id="blog">
+									<i class='fas fa-grin fa-fw'></i>&nbsp;主页
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/categories/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogcategories">
+									<i class='fas fa-folder-open fa-fw'></i>&nbsp;分类
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/tags/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogtags">
+									<i class='fas fa-hashtag fa-fw'></i>&nbsp;标签
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/archives/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogarchives">
+									<i class='fas fa-archive fa-fw'></i>&nbsp;归档
+								</a>
+							</li>
+      			
+      		
+				</ul>
+			</div>
+
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="搜索" />
+						<i class="icon fas fa-search fa-fw"></i>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a class="fas fa-search fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+				
+				<li class='s-menu'><a class="fas fa-bars fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+			</ul>
+		</div>
+
+		<div class='nav-sub container container--flex'>
+			<a class="logo flat-box"></a>
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a class="flat-btn fas fa-comments fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+        
+          <li class='s-toc'><a class="flat-btn fas fa-list fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+        
+			</ul>
+		</div>
+	</div>
+</header>
+	<aside class="menu-phone">
+    <header>
+		<nav class="menu navgation">
+      <ul>
+        
+          
+            <li>
+							<a class="nav flat-box" href="/blog/"
+                
+                
+                id="blog">
+								<i class='fas fa-clock fa-fw'></i>&nbsp;近期文章
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/blog/archives/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogblogarchives">
+								<i class='fas fa-archive fa-fw'></i>&nbsp;文章归档
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/projects/"
+                
+                
+                id="blogprojects">
+								<i class='fas fa-code-branch fa-fw'></i>&nbsp;开源项目
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/friends/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogfriends">
+								<i class='fas fa-link fa-fw'></i>&nbsp;我的友链
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="https://xaoxuu.com/wiki/material-x/"
+                
+                  rel="nofollow"
+                
+                
+                id="https:xaoxuu.comwikimaterial-x">
+								<i class='fas fa-book fa-fw'></i>&nbsp;主题文档
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/about/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogabout">
+								<i class='fas fa-info-circle fa-fw'></i>&nbsp;关于小站
+							</a>
+            </li>
+          
+       
+      </ul>
+		</nav>
+    </header>
+	</aside>
+<script>setLoadingBarProgress(40);</script>
+
+  </div>
+
+
+  <div class="l_body">
+    <div class='body-wrapper'>
+      <div class='l_main'>
+  
+
+  <article id="post" class="post white-box article-type-post" itemscope itemprop="blogPost">
+    
+
+
+  <section class='meta'>
+    
+    
+    <div class="meta" id="header-meta">
+      
+        
+  
+    <h1 class="title">
+      <a href="/blog/os/IPC%E9%80%9A%E4%BF%A1/">
+        IPC——进程间通信
+      </a>
+    </h1>
+  
+
+
+      
+      <div class='new-meta-box'>
+        
+          
+        
+          
+            
+  <div class='new-meta-item author'>
+    
+      <a href="https://ynzh.github.io/blog" rel="nofollow">
+        
+          <i class="fas fa-user" aria-hidden="true"></i>
+        
+        <p>高晋峰</p>
+      </a>
+    
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+    <p>2020年09月05日 19:03</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  
+  <div class='new-meta-item category'>
+    <a href='/blog/blog/categories/os/IPC/' rel="nofollow">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <p>os&nbsp;/&nbsp;IPC</p>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+  
+    <div class="new-meta-item browse busuanzi">
+      <a class='notlink'>
+        <i class="fas fa-eye" aria-hidden="true"></i>
+        <p>
+          <span id="busuanzi_value_page_pv">
+            <i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+          </span>
+        </p>
+      </a>
+    </div>
+  
+
+
+          
+        
+          
+            
+
+          
+        
+      </div>
+      
+        <hr>
+      
+    </div>
+  </section>
+
+
+    <section class="article typo">
+      <div class="article-entry" itemprop="articleBody">
+        <blockquote>
+<p>进程间通信</p>
+<a id="more"></a>
+</blockquote>
+<p>进程间通信（IPC，InterProcess Communication）是指在不同进程之间传播或交换信息。</p>
+<p>IPC的方式通常有管道（包括无名管道和命名管道）、消息队列、信号量、共享存储、Socket、Streams等。其中 Socket和Streams支持不同主机上的两个进程IPC。以Linux中的C语言编程为例。</p>
+<h2 id="一、管道"><a href="#一、管道" class="headerlink" title="一、管道"></a>一、管道</h2><p>管道，通常指无名管道，是 UNIX 系统IPC最古老的形式。</p>
+<h3 id="1、特点："><a href="#1、特点：" class="headerlink" title="1、特点："></a>1、特点：</h3><ol>
+<li>它是半双工的（即数据只能在一个方向上流动），具有固定的读端和写端。</li>
+<li>它只能用于具有亲缘关系的进程之间的通信（也是父子进程或者兄弟进程之间）。</li>
+<li>它可以看成是一种特殊的文件，对于它的读写也可以使用普通的read、write 等函数。但是它不是普通的文件，并不属于其他任何文件系统，并且只存在于内存中。</li>
+</ol>
+<h2 id="一、无名管道-pipe"><a href="#一、无名管道-pipe" class="headerlink" title="一、无名管道 - pipe"></a>一、无名管道 - pipe</h2><p>管道，通常指无名管道，是 UNIX 系统IPC最古老的形式。</p>
+<h3 id="1、特点：-1"><a href="#1、特点：-1" class="headerlink" title="1、特点："></a>1、特点：</h3><ol>
+<li>它是半双工的（即数据只能在一个方向上流动），具有固定的读端和写端。</li>
+<li>它只能用于具有亲缘关系的进程之间的通信（也是父子进程或者兄弟进程之间）。</li>
+<li>它可以看成是一种特殊的文件，对于它的读写也可以使用普通的read、write 等函数。但是它不是普通的文件，并不属于其他任何文件系统，并且只存在于内存中。</li>
+</ol>
+<h3 id="2、原型："><a href="#2、原型：" class="headerlink" title="2、原型："></a>2、原型：</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="number">2</span> <span class="function"><span class="keyword">int</span> <span class="title">pipe</span><span class="params">(<span class="keyword">int</span> fd[<span class="number">2</span>])</span></span>;    <span class="comment">// 返回值：若成功返回0，失败返回-1</span></span><br></pre></td></tr></table></figure>
+
+<p>当一个管道建立时，它会创建两个文件描述符：<code>fd[0]</code>为读而打开，<code>fd[1]</code>为写而打开。如下图：</p>
+<p><img src="https://images2015.cnblogs.com/blog/323808/201603/323808-20160311093936866-901519688.png" alt="img"></p>
+<p>要关闭管道只需将这两个文件描述符关闭即可。</p>
+<h3 id="3、例子"><a href="#3、例子" class="headerlink" title="3、例子"></a>3、例子</h3><p>单个进程中的管道几乎没有任何用处。所以，通常调用 pipe 的进程接着调用 fork，这样就创建了父进程与子进程之间的 IPC 通道。如下图所示：</p>
+<p><img src="https://images2015.cnblogs.com/blog/323808/201603/323808-20160311094030069-935122142.png" alt="img"></p>
+<p>若要数据流从父进程流向子进程，则关闭父进程的读端（<code>fd[0]</code>）与子进程的写端（<code>fd[1]</code>）；反之，则可以使数据流从子进程流向父进程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"> <span class="number">3</span> </span><br><span class="line"> <span class="number">4</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> 5 </span>&#123;</span><br><span class="line"> <span class="number">6</span>     <span class="keyword">int</span> fd[<span class="number">2</span>];  <span class="comment">// 两个文件描述符</span></span><br><span class="line"> <span class="number">7</span>     <span class="keyword">pid_t</span> pid;</span><br><span class="line"> <span class="number">8</span>     <span class="keyword">char</span> buff[<span class="number">20</span>];</span><br><span class="line"> <span class="number">9</span> </span><br><span class="line"><span class="number">10</span>     <span class="keyword">if</span>(pipe(fd) &lt; <span class="number">0</span>)  <span class="comment">// 创建管道</span></span><br><span class="line"><span class="number">11</span>         <span class="built_in">printf</span>(<span class="string">"Create Pipe Error!\n"</span>);</span><br><span class="line"><span class="number">12</span> </span><br><span class="line"><span class="number">13</span>     <span class="keyword">if</span>((pid = fork()) &lt; <span class="number">0</span>)  <span class="comment">// 创建子进程</span></span><br><span class="line"><span class="number">14</span>         <span class="built_in">printf</span>(<span class="string">"Fork Error!\n"</span>);</span><br><span class="line"><span class="number">15</span>     <span class="keyword">else</span> <span class="keyword">if</span>(pid &gt; <span class="number">0</span>)  <span class="comment">// 父进程</span></span><br><span class="line"><span class="number">16</span>     &#123;</span><br><span class="line"><span class="number">17</span>         <span class="built_in">close</span>(fd[<span class="number">0</span>]); <span class="comment">// 关闭读端</span></span><br><span class="line"><span class="number">18</span>         <span class="built_in">write</span>(fd[<span class="number">1</span>], <span class="string">"hello world\n"</span>, <span class="number">12</span>);</span><br><span class="line"><span class="number">19</span>     &#125;</span><br><span class="line"><span class="number">20</span>     <span class="keyword">else</span></span><br><span class="line"><span class="number">21</span>     &#123;</span><br><span class="line"><span class="number">22</span>         <span class="built_in">close</span>(fd[<span class="number">1</span>]); <span class="comment">// 关闭写端</span></span><br><span class="line"><span class="number">23</span>         <span class="built_in">read</span>(fd[<span class="number">0</span>], buff, <span class="number">20</span>);</span><br><span class="line"><span class="number">24</span>         <span class="built_in">printf</span>(<span class="string">"%s"</span>, buff);</span><br><span class="line"><span class="number">25</span>     &#125;</span><br><span class="line"><span class="number">26</span> </span><br><span class="line"><span class="number">27</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">28</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、有名管道-FIFO"><a href="#二、有名管道-FIFO" class="headerlink" title="二、有名管道 - FIFO"></a>二、有名管道 - FIFO</h2><p>FIFO，也称为命名管道，它是一种文件类型。</p>
+<h3 id="1、特点"><a href="#1、特点" class="headerlink" title="1、特点"></a>1、特点</h3><ol>
+<li>FIFO可以在无关的进程之间交换数据，与无名管道不同。</li>
+<li>FIFO有路径名与之相关联，它以一种特殊设备文件形式存在于文件系统中。</li>
+</ol>
+<h3 id="2、原型"><a href="#2、原型" class="headerlink" title="2、原型"></a>2、原型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1 #include &lt;sys/stat.h&gt;</span><br><span class="line">2 // 返回值：成功返回0，出错返回-1</span><br><span class="line">3 int mkfifo(const char *pathname, mode_t mode);</span><br></pre></td></tr></table></figure>
+
+<p>其中的 mode 参数与<code>open</code>函数中的 mode 相同。一旦创建了一个 FIFO，就可以用一般的文件I/O函数操作它。</p>
+<p>当 open 一个FIFO时，是否设置非阻塞标志（<code>O_NONBLOCK</code>）的区别：</p>
+<ul>
+<li>若没有指定<code>O_NONBLOCK</code>（默认），只读 open 要阻塞到某个其他进程为写而打开此 FIFO。类似的，只写 open 要阻塞到某个其他进程为读而打开它。</li>
+<li>若指定了<code>O_NONBLOCK</code>，则只读 open 立即返回。而只写 open 将出错返回 -1 如果没有进程已经为读而打开该 FIFO，其errno置ENXIO。</li>
+</ul>
+<h3 id="3、例子-1"><a href="#3、例子-1" class="headerlink" title="3、例子"></a>3、例子</h3><p>FIFO的通信方式类似于在进程中使用文件来传输数据，只不过FIFO类型文件同时具有管道的特性。在数据读出时，FIFO管道中同时清除数据，并且“先进先出”。下面的例子演示了使用 FIFO 进行 IPC 的过程：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;   // exit</span></span></span><br><span class="line"> <span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fcntl.h&gt;    // O_WRONLY</span></span></span><br><span class="line"> <span class="number">4</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"> <span class="number">5</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;time.h&gt;     // time</span></span></span><br><span class="line"> <span class="number">6</span> </span><br><span class="line"> <span class="number">7</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> 8 </span>&#123;</span><br><span class="line"> <span class="number">9</span>     <span class="keyword">int</span> fd;</span><br><span class="line"><span class="number">10</span>     <span class="keyword">int</span> n, i;</span><br><span class="line"><span class="number">11</span>     <span class="keyword">char</span> buf[<span class="number">1024</span>];</span><br><span class="line"><span class="number">12</span>     <span class="keyword">time_t</span> tp;</span><br><span class="line"><span class="number">13</span> </span><br><span class="line"><span class="number">14</span>     <span class="built_in">printf</span>(<span class="string">"I am %d process.\n"</span>, getpid()); <span class="comment">// 说明进程ID</span></span><br><span class="line"><span class="number">15</span>     </span><br><span class="line"><span class="number">16</span>     <span class="keyword">if</span>((fd = <span class="built_in">open</span>(<span class="string">"fifo1"</span>, O_WRONLY)) &lt; <span class="number">0</span>) <span class="comment">// 以写打开一个FIFO </span></span><br><span class="line"><span class="number">17</span>     &#123;</span><br><span class="line"><span class="number">18</span>         perror(<span class="string">"Open FIFO Failed"</span>);</span><br><span class="line"><span class="number">19</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">20</span>     &#125;</span><br><span class="line"><span class="number">21</span> </span><br><span class="line"><span class="number">22</span>     <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">10</span>; ++i)</span><br><span class="line"><span class="number">23</span>     &#123;</span><br><span class="line"><span class="number">24</span>         time(&amp;tp);  <span class="comment">// 取系统当前时间</span></span><br><span class="line"><span class="number">25</span>         n=<span class="built_in">sprintf</span>(buf,<span class="string">"Process %d's time is %s"</span>,getpid(),ctime(&amp;tp));</span><br><span class="line"><span class="number">26</span>         <span class="built_in">printf</span>(<span class="string">"Send message: %s"</span>, buf); <span class="comment">// 打印</span></span><br><span class="line"><span class="number">27</span>         <span class="keyword">if</span>(<span class="built_in">write</span>(fd, buf, n+<span class="number">1</span>) &lt; <span class="number">0</span>)  <span class="comment">// 写入到FIFO中</span></span><br><span class="line"><span class="number">28</span>         &#123;</span><br><span class="line"><span class="number">29</span>             perror(<span class="string">"Write FIFO Failed"</span>);</span><br><span class="line"><span class="number">30</span>             <span class="built_in">close</span>(fd);</span><br><span class="line"><span class="number">31</span>             <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">32</span>         &#125;</span><br><span class="line"><span class="number">33</span>         sleep(<span class="number">1</span>);  <span class="comment">// 休眠1秒</span></span><br><span class="line"><span class="number">34</span>     &#125;</span><br><span class="line"><span class="number">35</span> </span><br><span class="line"><span class="number">36</span>     <span class="built_in">close</span>(fd);  <span class="comment">// 关闭FIFO文件</span></span><br><span class="line"><span class="number">37</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">38</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"> <span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"> <span class="number">4</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"> <span class="number">5</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"> <span class="number">6</span> </span><br><span class="line"> <span class="number">7</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> 8 </span>&#123;</span><br><span class="line"> <span class="number">9</span>     <span class="keyword">int</span> fd;</span><br><span class="line"><span class="number">10</span>     <span class="keyword">int</span> len;</span><br><span class="line"><span class="number">11</span>     <span class="keyword">char</span> buf[<span class="number">1024</span>];</span><br><span class="line"><span class="number">12</span> </span><br><span class="line"><span class="number">13</span>     <span class="keyword">if</span>(mkfifo(<span class="string">"fifo1"</span>, <span class="number">0666</span>) &lt; <span class="number">0</span> &amp;&amp; errno!=EEXIST) <span class="comment">// 创建FIFO管道</span></span><br><span class="line"><span class="number">14</span>         perror(<span class="string">"Create FIFO Failed"</span>);</span><br><span class="line"><span class="number">15</span> </span><br><span class="line"><span class="number">16</span>     <span class="keyword">if</span>((fd = <span class="built_in">open</span>(<span class="string">"fifo1"</span>, O_RDONLY)) &lt; <span class="number">0</span>)  <span class="comment">// 以读打开FIFO</span></span><br><span class="line"><span class="number">17</span>     &#123;</span><br><span class="line"><span class="number">18</span>         perror(<span class="string">"Open FIFO Failed"</span>);</span><br><span class="line"><span class="number">19</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">20</span>     &#125;</span><br><span class="line"><span class="number">21</span>     </span><br><span class="line"><span class="number">22</span>     <span class="keyword">while</span>((len = <span class="built_in">read</span>(fd, buf, <span class="number">1024</span>)) &gt; <span class="number">0</span>) <span class="comment">// 读取FIFO管道</span></span><br><span class="line"><span class="number">23</span>         <span class="built_in">printf</span>(<span class="string">"Read message: %s"</span>, buf);</span><br><span class="line"><span class="number">24</span> </span><br><span class="line"><span class="number">25</span>     <span class="built_in">close</span>(fd);  <span class="comment">// 关闭FIFO文件</span></span><br><span class="line"><span class="number">26</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">27</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span> [cheesezh@localhost]$ ./write_fifo </span><br><span class="line"> <span class="number">2</span> I am <span class="number">5954</span> <span class="built_in">process</span>.</span><br><span class="line"> <span class="number">3</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">28</span> <span class="number">2015</span></span><br><span class="line"> <span class="number">4</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">29</span> <span class="number">2015</span></span><br><span class="line"> <span class="number">5</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">30</span> <span class="number">2015</span></span><br><span class="line"> <span class="number">6</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">31</span> <span class="number">2015</span></span><br><span class="line"> <span class="number">7</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">32</span> <span class="number">2015</span></span><br><span class="line"> <span class="number">8</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">33</span> <span class="number">2015</span></span><br><span class="line"> <span class="number">9</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">34</span> <span class="number">2015</span></span><br><span class="line"><span class="number">10</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">35</span> <span class="number">2015</span></span><br><span class="line"><span class="number">11</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">36</span> <span class="number">2015</span></span><br><span class="line"><span class="number">12</span> Send message: <span class="built_in">Process</span> <span class="number">5954'</span>s time is Mon Apr <span class="number">20</span> <span class="number">12</span>:<span class="number">37</span>:<span class="number">37</span> <span class="number">2015</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> 1 [cheesezh@localhost]$ ./read_fifo </span><br><span class="line"> 2 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:28 2015</span><br><span class="line"> 3 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:29 2015</span><br><span class="line"> 4 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:30 2015</span><br><span class="line"> 5 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:31 2015</span><br><span class="line"> 6 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:32 2015</span><br><span class="line"> 7 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:33 2015</span><br><span class="line"> 8 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:34 2015</span><br><span class="line"> 9 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:35 2015</span><br><span class="line">10 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:36 2015</span><br><span class="line">11 Read message: Process 5954&apos;s time is Mon Apr 20 12:37:37 2015</span><br></pre></td></tr></table></figure>
+
+
+
+<p>上述例子可以扩展成 客户进程—服务器进程 通信的实例，<code>write_fifo</code>的作用类似于客户端，可以打开多个客户端向一个服务器发送请求信息，<code>read_fifo</code>类似于服务器，它适时监控着FIFO的读端，当有数据时，读出并进行处理，但是有一个关键的问题是，每一个客户端必须预先知道服务器提供的FIFO接口，下图显示了这种安排：</p>
+<p><img src="https://images2015.cnblogs.com/blog/323808/201603/323808-20160311094842257-893623615.png" alt="img"></p>
+<h2 id="三、消息队列"><a href="#三、消息队列" class="headerlink" title="三、消息队列"></a>三、消息队列</h2><p>消息队列，是消息的链接表，存放在内核中。一个消息队列由一个标识符（即队列ID）来标识。</p>
+<h3 id="1、特点-1"><a href="#1、特点-1" class="headerlink" title="1、特点"></a>1、特点</h3><ol>
+<li>消息队列是面向记录的，其中的消息具有特定的格式以及特定的优先级。</li>
+<li>消息队列独立于发送与接收进程。进程终止时，消息队列及其内容并不会被删除。</li>
+<li>消息队列可以实现消息的随机查询,消息不一定要以先进先出的次序读取,也可以按消息的类型读取。</li>
+</ol>
+<h3 id="2、原型-1"><a href="#2、原型-1" class="headerlink" title="2、原型"></a>2、原型</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"><span class="number">2</span> <span class="comment">// 创建或打开消息队列：成功返回队列ID，失败返回-1</span></span><br><span class="line"><span class="number">3</span> <span class="function"><span class="keyword">int</span> <span class="title">msgget</span><span class="params">(<span class="keyword">key_t</span> key, <span class="keyword">int</span> flag)</span></span>;</span><br><span class="line"><span class="number">4</span> <span class="comment">// 添加消息：成功返回0，失败返回-1</span></span><br><span class="line"><span class="number">5</span> <span class="function"><span class="keyword">int</span> <span class="title">msgsnd</span><span class="params">(<span class="keyword">int</span> msqid, <span class="keyword">const</span> <span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> <span class="built_in">size</span>, <span class="keyword">int</span> flag)</span></span>;</span><br><span class="line"><span class="number">6</span> <span class="comment">// 读取消息：成功返回消息数据的长度，失败返回-1</span></span><br><span class="line"><span class="number">7</span> <span class="function"><span class="keyword">int</span> <span class="title">msgrcv</span><span class="params">(<span class="keyword">int</span> msqid, <span class="keyword">void</span> *ptr, <span class="keyword">size_t</span> <span class="built_in">size</span>, <span class="keyword">long</span> type,<span class="keyword">int</span> flag)</span></span>;</span><br><span class="line"><span class="number">8</span> <span class="comment">// 控制消息队列：成功返回0，失败返回-1</span></span><br><span class="line"><span class="number">9</span> <span class="function"><span class="keyword">int</span> <span class="title">msgctl</span><span class="params">(<span class="keyword">int</span> msqid, <span class="keyword">int</span> cmd, struct msqid_ds *buf)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在以下两种情况下，<code>msgget</code>将创建一个新的消息队列：</p>
+<ul>
+<li>如果没有与键值key相对应的消息队列，并且flag中包含了<code>IPC_CREAT</code>标志位。</li>
+<li>key参数为<code>IPC_PRIVATE</code>。</li>
+</ul>
+<p>函数<code>msgrcv</code>在读取消息队列时，type参数有下面几种情况：</p>
+<ul>
+<li><code>type == 0</code>，返回队列中的第一个消息；</li>
+<li><code>type &gt; 0</code>，返回队列中消息类型为 type 的第一个消息；</li>
+<li><code>type &lt; 0</code>，返回队列中消息类型值小于或等于 type 绝对值的消息，如果有多个，则取类型值最小的消息。</li>
+</ul>
+<p>可以看出，type值非 0 时用于以非先进先出次序读消息。也可以把 type 看做优先级的权值。（其他的参数解释，请自行Google之）</p>
+<h3 id="3、例子-2"><a href="#3、例子-2" class="headerlink" title="3、例子"></a>3、例子</h3><p>下面写了一个简单的使用消息队列进行IPC的例子，服务端程序一直在等待特定类型的消息，当收到该类型的消息以后，发送另一种特定类型的消息作为反馈，客户端读取该反馈并打印出来。</p>
+<p>msg_server.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"> <span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"> <span class="number">4</span> </span><br><span class="line"> <span class="number">5</span> <span class="comment">// 用于创建一个唯一的key</span></span><br><span class="line"> <span class="number">6</span> <span class="meta">#<span class="meta-keyword">define</span> MSG_FILE <span class="meta-string">"/etc/passwd"</span></span></span><br><span class="line"> <span class="number">7</span> </span><br><span class="line"> <span class="number">8</span> <span class="comment">// 消息结构</span></span><br><span class="line"> <span class="number">9</span> <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> &#123;</span></span><br><span class="line"><span class="number">10</span>     <span class="keyword">long</span> mtype;</span><br><span class="line"><span class="number">11</span>     <span class="keyword">char</span> mtext[<span class="number">256</span>];</span><br><span class="line"><span class="number">12</span> &#125;;</span><br><span class="line"><span class="number">13</span> </span><br><span class="line"><span class="number">14</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function">15 </span>&#123;</span><br><span class="line"><span class="number">16</span>     <span class="keyword">int</span> msqid;</span><br><span class="line"><span class="number">17</span>     <span class="keyword">key_t</span> key;</span><br><span class="line"><span class="number">18</span>     <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> <span class="title">msg</span>;</span></span><br><span class="line"><span class="number">19</span>     </span><br><span class="line"><span class="number">20</span>     <span class="comment">// 获取key值</span></span><br><span class="line"><span class="number">21</span>     <span class="keyword">if</span>((key = ftok(MSG_FILE,<span class="string">'z'</span>)) &lt; <span class="number">0</span>)</span><br><span class="line"><span class="number">22</span>     &#123;</span><br><span class="line"><span class="number">23</span>         perror(<span class="string">"ftok error"</span>);</span><br><span class="line"><span class="number">24</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">25</span>     &#125;</span><br><span class="line"><span class="number">26</span> </span><br><span class="line"><span class="number">27</span>     <span class="comment">// 打印key值</span></span><br><span class="line"><span class="number">28</span>     <span class="built_in">printf</span>(<span class="string">"Message Queue - Server key is: %d.\n"</span>, key);</span><br><span class="line"><span class="number">29</span> </span><br><span class="line"><span class="number">30</span>     <span class="comment">// 创建消息队列</span></span><br><span class="line"><span class="number">31</span>     <span class="keyword">if</span> ((msqid = msgget(key, IPC_CREAT|<span class="number">0777</span>)) == <span class="number">-1</span>)</span><br><span class="line"><span class="number">32</span>     &#123;</span><br><span class="line"><span class="number">33</span>         perror(<span class="string">"msgget error"</span>);</span><br><span class="line"><span class="number">34</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">35</span>     &#125;</span><br><span class="line"><span class="number">36</span> </span><br><span class="line"><span class="number">37</span>     <span class="comment">// 打印消息队列ID及进程ID</span></span><br><span class="line"><span class="number">38</span>     <span class="built_in">printf</span>(<span class="string">"My msqid is: %d.\n"</span>, msqid);</span><br><span class="line"><span class="number">39</span>     <span class="built_in">printf</span>(<span class="string">"My pid is: %d.\n"</span>, getpid());</span><br><span class="line"><span class="number">40</span> </span><br><span class="line"><span class="number">41</span>     <span class="comment">// 循环读取消息</span></span><br><span class="line"><span class="number">42</span>     <span class="keyword">for</span>(;;) </span><br><span class="line"><span class="number">43</span>     &#123;</span><br><span class="line"><span class="number">44</span>         msgrcv(msqid, &amp;msg, <span class="number">256</span>, <span class="number">888</span>, <span class="number">0</span>);<span class="comment">// 返回类型为888的第一个消息</span></span><br><span class="line"><span class="number">45</span>         <span class="built_in">printf</span>(<span class="string">"Server: receive msg.mtext is: %s.\n"</span>, msg.mtext);</span><br><span class="line"><span class="number">46</span>         <span class="built_in">printf</span>(<span class="string">"Server: receive msg.mtype is: %d.\n"</span>, msg.mtype);</span><br><span class="line"><span class="number">47</span> </span><br><span class="line"><span class="number">48</span>         msg.mtype = <span class="number">999</span>; <span class="comment">// 客户端接收的消息类型</span></span><br><span class="line"><span class="number">49</span>         <span class="built_in">sprintf</span>(msg.mtext, <span class="string">"hello, I'm server %d"</span>, getpid());</span><br><span class="line"><span class="number">50</span>         msgsnd(msqid, &amp;msg, <span class="keyword">sizeof</span>(msg.mtext), <span class="number">0</span>);</span><br><span class="line"><span class="number">51</span>     &#125;</span><br><span class="line"><span class="number">52</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">53</span> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"> <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"> <span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"> <span class="number">4</span> </span><br><span class="line"> <span class="number">5</span> <span class="comment">// 用于创建一个唯一的key</span></span><br><span class="line"> <span class="number">6</span> <span class="meta">#<span class="meta-keyword">define</span> MSG_FILE <span class="meta-string">"/etc/passwd"</span></span></span><br><span class="line"> <span class="number">7</span> </span><br><span class="line"> <span class="number">8</span> <span class="comment">// 消息结构</span></span><br><span class="line"> <span class="number">9</span> <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> &#123;</span></span><br><span class="line"><span class="number">10</span>     <span class="keyword">long</span> mtype;</span><br><span class="line"><span class="number">11</span>     <span class="keyword">char</span> mtext[<span class="number">256</span>];</span><br><span class="line"><span class="number">12</span> &#125;;</span><br><span class="line"><span class="number">13</span> </span><br><span class="line"><span class="number">14</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function">15 </span>&#123;</span><br><span class="line"><span class="number">16</span>     <span class="keyword">int</span> msqid;</span><br><span class="line"><span class="number">17</span>     <span class="keyword">key_t</span> key;</span><br><span class="line"><span class="number">18</span>     <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> <span class="title">msg</span>;</span></span><br><span class="line"><span class="number">19</span> </span><br><span class="line"><span class="number">20</span>     <span class="comment">// 获取key值</span></span><br><span class="line"><span class="number">21</span>     <span class="keyword">if</span> ((key = ftok(MSG_FILE, <span class="string">'z'</span>)) &lt; <span class="number">0</span>) </span><br><span class="line"><span class="number">22</span>     &#123;</span><br><span class="line"><span class="number">23</span>         perror(<span class="string">"ftok error"</span>);</span><br><span class="line"><span class="number">24</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">25</span>     &#125;</span><br><span class="line"><span class="number">26</span> </span><br><span class="line"><span class="number">27</span>     <span class="comment">// 打印key值</span></span><br><span class="line"><span class="number">28</span>     <span class="built_in">printf</span>(<span class="string">"Message Queue - Client key is: %d.\n"</span>, key);</span><br><span class="line"><span class="number">29</span> </span><br><span class="line"><span class="number">30</span>     <span class="comment">// 打开消息队列</span></span><br><span class="line"><span class="number">31</span>     <span class="keyword">if</span> ((msqid = msgget(key, IPC_CREAT|<span class="number">0777</span>)) == <span class="number">-1</span>) </span><br><span class="line"><span class="number">32</span>     &#123;</span><br><span class="line"><span class="number">33</span>         perror(<span class="string">"msgget error"</span>);</span><br><span class="line"><span class="number">34</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">35</span>     &#125;</span><br><span class="line"><span class="number">36</span> </span><br><span class="line"><span class="number">37</span>     <span class="comment">// 打印消息队列ID及进程ID</span></span><br><span class="line"><span class="number">38</span>     <span class="built_in">printf</span>(<span class="string">"My msqid is: %d.\n"</span>, msqid);</span><br><span class="line"><span class="number">39</span>     <span class="built_in">printf</span>(<span class="string">"My pid is: %d.\n"</span>, getpid());</span><br><span class="line"><span class="number">40</span> </span><br><span class="line"><span class="number">41</span>     <span class="comment">// 添加消息，类型为888</span></span><br><span class="line"><span class="number">42</span>     msg.mtype = <span class="number">888</span>;</span><br><span class="line"><span class="number">43</span>     <span class="built_in">sprintf</span>(msg.mtext, <span class="string">"hello, I'm client %d"</span>, getpid());</span><br><span class="line"><span class="number">44</span>     msgsnd(msqid, &amp;msg, <span class="keyword">sizeof</span>(msg.mtext), <span class="number">0</span>);</span><br><span class="line"><span class="number">45</span> </span><br><span class="line"><span class="number">46</span>     <span class="comment">// 读取类型为777的消息</span></span><br><span class="line"><span class="number">47</span>     msgrcv(msqid, &amp;msg, <span class="number">256</span>, <span class="number">999</span>, <span class="number">0</span>);</span><br><span class="line"><span class="number">48</span>     <span class="built_in">printf</span>(<span class="string">"Client: receive msg.mtext is: %s.\n"</span>, msg.mtext);</span><br><span class="line"><span class="number">49</span>     <span class="built_in">printf</span>(<span class="string">"Client: receive msg.mtype is: %d.\n"</span>, msg.mtype);</span><br><span class="line"><span class="number">50</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">51</span> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="四、信号量"><a href="#四、信号量" class="headerlink" title="四、信号量"></a>四、信号量</h2><p>信号量（semaphore）与已经介绍过的 IPC 结构不同，它是一个计数器。信号量用于实现进程间的互斥与同步，而不是用于存储进程间通信数据。</p>
+<h3 id="1、特点-2"><a href="#1、特点-2" class="headerlink" title="1、特点"></a>1、特点</h3><ol>
+<li>信号量用于进程间同步，若要在进程间传递数据需要结合共享内存。</li>
+<li>信号量基于操作系统的 PV 操作，程序对信号量的操作都是原子操作。</li>
+<li>每次对信号量的 PV 操作不仅限于对信号量值加 1 或减 1，而且可以加减任意正整数。</li>
+<li>支持信号量组。</li>
+</ol>
+<h3 id="2、原型-2"><a href="#2、原型-2" class="headerlink" title="2、原型"></a>2、原型</h3><p>最简单的信号量是只能取 0 和 1 的变量，这也是信号量最常见的一种形式，叫做二值信号量（Binary Semaphore）。而可以取多个正整数的信号量被称为通用信号量。</p>
+<p>Linux 下的信号量函数都是在通用的信号量数组上进行操作，而不是在一个单一的二值信号量上进行操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="number">2</span> <span class="comment">// 创建或获取一个信号量组：若成功返回信号量集ID，失败返回-1</span></span><br><span class="line"><span class="number">3</span> <span class="function"><span class="keyword">int</span> <span class="title">semget</span><span class="params">(<span class="keyword">key_t</span> key, <span class="keyword">int</span> num_sems, <span class="keyword">int</span> sem_flags)</span></span>;</span><br><span class="line"><span class="number">4</span> <span class="comment">// 对信号量组进行操作，改变信号量的值：成功返回0，失败返回-1</span></span><br><span class="line"><span class="number">5</span> <span class="function"><span class="keyword">int</span> <span class="title">semop</span><span class="params">(<span class="keyword">int</span> semid, struct sembuf semoparray[], <span class="keyword">size_t</span> numops)</span></span>;  </span><br><span class="line"><span class="number">6</span> <span class="comment">// 控制信号量的相关信息</span></span><br><span class="line"><span class="number">7</span> <span class="function"><span class="keyword">int</span> <span class="title">semctl</span><span class="params">(<span class="keyword">int</span> semid, <span class="keyword">int</span> sem_num, <span class="keyword">int</span> cmd, ...)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当<code>semget</code>创建新的信号量集合时，必须指定集合中信号量的个数（即<code>num_sems</code>），通常为1； 如果是引用一个现有的集合，则将<code>num_sems</code>指定为 0 。</p>
+<p>在<code>semop</code>函数中，<code>sembuf</code>结构的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> </span></span><br><span class="line"><span class="class">2 &#123;</span></span><br><span class="line"><span class="number">3</span>     <span class="keyword">short</span> sem_num; <span class="comment">// 信号量组中对应的序号，0～sem_nums-1</span></span><br><span class="line"><span class="number">4</span>     <span class="keyword">short</span> sem_op;  <span class="comment">// 信号量值在一次操作中的改变量</span></span><br><span class="line"><span class="number">5</span>     <span class="keyword">short</span> sem_flg; <span class="comment">// IPC_NOWAIT, SEM_UNDO</span></span><br><span class="line"><span class="number">6</span> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>其中 sem_op 是一次操作中的信号量的改变量：</p>
+<ul>
+<li><p>若<code>sem_op &gt; 0</code>，表示进程释放相应的资源数，将 sem_op 的值加到信号量的值上。如果有进程正在休眠等待此信号量，则换行它们。</p>
+</li>
+<li><p>若<code>sem_op &lt; 0</code>，请求 sem_op 的绝对值的资源。</p>
+<ul>
+<li><p>如果相应的资源数可以满足请求，则将该信号量的值减去sem_op的绝对值，函数成功返回。</p>
+</li>
+<li><p>当相应的资源数不能满足请求时，这个操作与</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sem_flg</span><br></pre></td></tr></table></figure>
+
+<p>有关。</p>
+<ul>
+<li><p>sem_flg 指定<code>IPC_NOWAIT</code>，则semop函数出错返回<code>EAGAIN</code>。</p>
+</li>
+<li><p>sem_flg 没有指定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPC_NOWAIT</span><br></pre></td></tr></table></figure>
+
+<p>，则将该信号量的semncnt值加1，然后进程挂起直到下述情况发生：</p>
+<ol>
+<li>当相应的资源数可以满足请求，此信号量的semncnt值减1，该信号量的值减去sem_op的绝对值。成功返回；</li>
+<li>此信号量被删除，函数smeop出错返回EIDRM；</li>
+<li>进程捕捉到信号，并从信号处理函数返回，此情况下将此信号量的semncnt值减1，函数semop出错返回EINTR</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>若<code>sem_op == 0</code>，进程阻塞直到信号量的相应值为0：</p>
+<ul>
+<li><p>当信号量已经为0，函数立即返回。</p>
+</li>
+<li><p>如果信号量的值不为0，则依据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sem_flg</span><br></pre></td></tr></table></figure>
+
+<p>决定函数动作：</p>
+<ul>
+<li><p>sem_flg指定<code>IPC_NOWAIT</code>，则出错返回<code>EAGAIN</code>。</p>
+</li>
+<li><p>sem_flg没有指定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPC_NOWAIT</span><br></pre></td></tr></table></figure>
+
+<p>，则将该信号量的semncnt值加1，然后进程挂起直到下述情况发生：</p>
+<ol>
+<li>信号量值为0，将信号量的semzcnt的值减1，函数semop成功返回；</li>
+<li>此信号量被删除，函数smeop出错返回EIDRM；</li>
+<li>进程捕捉到信号，并从信号处理函数返回，在此情况将此信号量的semncnt值减1，函数semop出错返回EINTR</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>在<code>semctl</code>函数中的命令有多种，这里就说两个常用的：</p>
+<ul>
+<li><code>SETVAL</code>：用于初始化信号量为一个已知的值。所需要的值作为联合semun的val成员来传递。在信号量第一次使用之前需要设置信号量。</li>
+<li><code>IPC_RMID</code>：删除一个信号量集合。如果不删除信号量，它将继续在系统中存在，即使程序已经退出，它可能在你下次运行此程序时引发问题，而且信号量是一种有限的资源。</li>
+</ul>
+<h3 id="3、例子-3"><a href="#3、例子-3" class="headerlink" title="3、例子"></a>3、例子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line">  <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line">  <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line">  <span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line">  <span class="number">4</span> </span><br><span class="line">  <span class="number">5</span> <span class="comment">// 联合体，用于semctl初始化</span></span><br><span class="line">  <span class="number">6</span> <span class="keyword">union</span> semun</span><br><span class="line">  <span class="number">7</span> &#123;</span><br><span class="line">  <span class="number">8</span>     <span class="keyword">int</span>              val; <span class="comment">/*for SETVAL*/</span></span><br><span class="line">  <span class="number">9</span>     <span class="class"><span class="keyword">struct</span> <span class="title">semid_ds</span> *<span class="title">buf</span>;</span></span><br><span class="line"> <span class="number">10</span>     <span class="keyword">unsigned</span> <span class="keyword">short</span>  *<span class="built_in">array</span>;</span><br><span class="line"> <span class="number">11</span> &#125;;</span><br><span class="line"> <span class="number">12</span> </span><br><span class="line"> <span class="number">13</span> <span class="comment">// 初始化信号量</span></span><br><span class="line"> <span class="number">14</span> <span class="function"><span class="keyword">int</span> <span class="title">init_sem</span><span class="params">(<span class="keyword">int</span> sem_id, <span class="keyword">int</span> value)</span></span></span><br><span class="line"><span class="function"> 15 </span>&#123;</span><br><span class="line"> <span class="number">16</span>     <span class="keyword">union</span> semun tmp;</span><br><span class="line"> <span class="number">17</span>     tmp.val = value;</span><br><span class="line"> <span class="number">18</span>     <span class="keyword">if</span>(semctl(sem_id, <span class="number">0</span>, SETVAL, tmp) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">19</span>     &#123;</span><br><span class="line"> <span class="number">20</span>         perror(<span class="string">"Init Semaphore Error"</span>);</span><br><span class="line"> <span class="number">21</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">22</span>     &#125;</span><br><span class="line"> <span class="number">23</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">24</span> &#125;</span><br><span class="line"> <span class="number">25</span> </span><br><span class="line"> <span class="number">26</span> <span class="comment">// P操作:</span></span><br><span class="line"> <span class="number">27</span> <span class="comment">//    若信号量值为1，获取资源并将信号量值-1 </span></span><br><span class="line"> <span class="number">28</span> <span class="comment">//    若信号量值为0，进程挂起等待</span></span><br><span class="line"> <span class="number">29</span> <span class="function"><span class="keyword">int</span> <span class="title">sem_p</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 30 </span>&#123;</span><br><span class="line"> <span class="number">31</span>     <span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sbuf</span>;</span></span><br><span class="line"> <span class="number">32</span>     sbuf.sem_num = <span class="number">0</span>; <span class="comment">/*序号*/</span></span><br><span class="line"> <span class="number">33</span>     sbuf.sem_op = <span class="number">-1</span>; <span class="comment">/*P操作*/</span></span><br><span class="line"> <span class="number">34</span>     sbuf.sem_flg = SEM_UNDO;</span><br><span class="line"> <span class="number">35</span> </span><br><span class="line"> <span class="number">36</span>     <span class="keyword">if</span>(semop(sem_id, &amp;sbuf, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">37</span>     &#123;</span><br><span class="line"> <span class="number">38</span>         perror(<span class="string">"P operation Error"</span>);</span><br><span class="line"> <span class="number">39</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">40</span>     &#125;</span><br><span class="line"> <span class="number">41</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">42</span> &#125;</span><br><span class="line"> <span class="number">43</span> </span><br><span class="line"> <span class="number">44</span> <span class="comment">// V操作：</span></span><br><span class="line"> <span class="number">45</span> <span class="comment">//    释放资源并将信号量值+1</span></span><br><span class="line"> <span class="number">46</span> <span class="comment">//    如果有进程正在挂起等待，则唤醒它们</span></span><br><span class="line"> <span class="number">47</span> <span class="function"><span class="keyword">int</span> <span class="title">sem_v</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 48 </span>&#123;</span><br><span class="line"> <span class="number">49</span>     <span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sbuf</span>;</span></span><br><span class="line"> <span class="number">50</span>     sbuf.sem_num = <span class="number">0</span>; <span class="comment">/*序号*/</span></span><br><span class="line"> <span class="number">51</span>     sbuf.sem_op = <span class="number">1</span>;  <span class="comment">/*V操作*/</span></span><br><span class="line"> <span class="number">52</span>     sbuf.sem_flg = SEM_UNDO;</span><br><span class="line"> <span class="number">53</span> </span><br><span class="line"> <span class="number">54</span>     <span class="keyword">if</span>(semop(sem_id, &amp;sbuf, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">55</span>     &#123;</span><br><span class="line"> <span class="number">56</span>         perror(<span class="string">"V operation Error"</span>);</span><br><span class="line"> <span class="number">57</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">58</span>     &#125;</span><br><span class="line"> <span class="number">59</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">60</span> &#125;</span><br><span class="line"> <span class="number">61</span> </span><br><span class="line"> <span class="number">62</span> <span class="comment">// 删除信号量集</span></span><br><span class="line"> <span class="number">63</span> <span class="function"><span class="keyword">int</span> <span class="title">del_sem</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 64 </span>&#123;</span><br><span class="line"> <span class="number">65</span>     <span class="keyword">union</span> semun tmp;</span><br><span class="line"> <span class="number">66</span>     <span class="keyword">if</span>(semctl(sem_id, <span class="number">0</span>, IPC_RMID, tmp) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">67</span>     &#123;</span><br><span class="line"> <span class="number">68</span>         perror(<span class="string">"Delete Semaphore Error"</span>);</span><br><span class="line"> <span class="number">69</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">70</span>     &#125;</span><br><span class="line"> <span class="number">71</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">72</span> &#125;</span><br><span class="line"> <span class="number">73</span> </span><br><span class="line"> <span class="number">74</span> </span><br><span class="line"> <span class="number">75</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> 76 </span>&#123;</span><br><span class="line"> <span class="number">77</span>     <span class="keyword">int</span> sem_id;  <span class="comment">// 信号量集ID</span></span><br><span class="line"> <span class="number">78</span>     <span class="keyword">key_t</span> key;  </span><br><span class="line"> <span class="number">79</span>     <span class="keyword">pid_t</span> pid;</span><br><span class="line"> <span class="number">80</span> </span><br><span class="line"> <span class="number">81</span>     <span class="comment">// 获取key值</span></span><br><span class="line"> <span class="number">82</span>     <span class="keyword">if</span>((key = ftok(<span class="string">"."</span>, <span class="string">'z'</span>)) &lt; <span class="number">0</span>)</span><br><span class="line"> <span class="number">83</span>     &#123;</span><br><span class="line"> <span class="number">84</span>         perror(<span class="string">"ftok error"</span>);</span><br><span class="line"> <span class="number">85</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"> <span class="number">86</span>     &#125;</span><br><span class="line"> <span class="number">87</span> </span><br><span class="line"> <span class="number">88</span>     <span class="comment">// 创建信号量集，其中只有一个信号量</span></span><br><span class="line"> <span class="number">89</span>     <span class="keyword">if</span>((sem_id = semget(key, <span class="number">1</span>, IPC_CREAT|<span class="number">0666</span>)) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">90</span>     &#123;</span><br><span class="line"> <span class="number">91</span>         perror(<span class="string">"semget error"</span>);</span><br><span class="line"> <span class="number">92</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"> <span class="number">93</span>     &#125;</span><br><span class="line"> <span class="number">94</span> </span><br><span class="line"> <span class="number">95</span>     <span class="comment">// 初始化：初值设为0资源被占用</span></span><br><span class="line"> <span class="number">96</span>     init_sem(sem_id, <span class="number">0</span>);</span><br><span class="line"> <span class="number">97</span> </span><br><span class="line"> <span class="number">98</span>     <span class="keyword">if</span>((pid = fork()) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">99</span>         perror(<span class="string">"Fork Error"</span>);</span><br><span class="line"><span class="number">100</span>     <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>) <span class="comment">/*子进程*/</span> </span><br><span class="line"><span class="number">101</span>     &#123;</span><br><span class="line"><span class="number">102</span>         sleep(<span class="number">2</span>);</span><br><span class="line"><span class="number">103</span>         <span class="built_in">printf</span>(<span class="string">"Process child: pid=%d\n"</span>, getpid());</span><br><span class="line"><span class="number">104</span>         sem_v(sem_id);  <span class="comment">/*释放资源*/</span></span><br><span class="line"><span class="number">105</span>     &#125;</span><br><span class="line"><span class="number">106</span>     <span class="keyword">else</span>  <span class="comment">/*父进程*/</span></span><br><span class="line"><span class="number">107</span>     &#123;</span><br><span class="line"><span class="number">108</span>         sem_p(sem_id);   <span class="comment">/*等待资源*/</span></span><br><span class="line"><span class="number">109</span>         <span class="built_in">printf</span>(<span class="string">"Process father: pid=%d\n"</span>, getpid());</span><br><span class="line"><span class="number">110</span>         sem_v(sem_id);   <span class="comment">/*释放资源*/</span></span><br><span class="line"><span class="number">111</span>         del_sem(sem_id); <span class="comment">/*删除信号量集*/</span></span><br><span class="line"><span class="number">112</span>     &#125;</span><br><span class="line"><span class="number">113</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">114</span> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>上面的例子如果不加信号量，则父进程会先执行完毕。这里加了信号量让父进程等待子进程执行完以后再执行。</p>
+<h2 id="五、共享内存"><a href="#五、共享内存" class="headerlink" title="五、共享内存"></a>五、共享内存</h2><p>共享内存（Shared Memory），指两个或多个进程共享一个给定的存储区。</p>
+<h3 id="1、特点-3"><a href="#1、特点-3" class="headerlink" title="1、特点"></a>1、特点</h3><ol>
+<li>共享内存是最快的一种 IPC，因为进程是直接对内存进行存取。</li>
+<li>因为多个进程可以同时操作，所以需要进行同步。</li>
+<li>信号量+共享内存通常结合在一起使用，信号量用来同步对共享内存的访问。</li>
+</ol>
+<h3 id="2、原型-3"><a href="#2、原型-3" class="headerlink" title="2、原型"></a>2、原型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1 #include &lt;sys/shm.h&gt;</span><br><span class="line">2 // 创建或获取一个共享内存：成功返回共享内存ID，失败返回-1</span><br><span class="line">3 int shmget(key_t key, size_t size, int flag);</span><br><span class="line">4 // 连接共享内存到当前进程的地址空间：成功返回指向共享内存的指针，失败返回-1</span><br><span class="line">5 void *shmat(int shm_id, const void *addr, int flag);</span><br><span class="line">6 // 断开与共享内存的连接：成功返回0，失败返回-1</span><br><span class="line">7 int shmdt(void *addr); </span><br><span class="line">8 // 控制共享内存的相关信息：成功返回0，失败返回-1</span><br><span class="line">9 int shmctl(int shm_id, int cmd, struct shmid_ds *buf);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>当用<code>shmget</code>函数创建一段共享内存时，必须指定其 size；而如果引用一个已存在的共享内存，则将 size 指定为0 。</p>
+<p>当一段共享内存被创建以后，它并不能被任何进程访问。必须使用<code>shmat</code>函数连接该共享内存到当前进程的地址空间，连接成功后把共享内存区对象映射到调用进程的地址空间，随后可像本地空间一样访问。</p>
+<p><code>shmdt</code>函数是用来断开<code>shmat</code>建立的连接的。注意，这并不是从系统中删除该共享内存，只是当前进程不能再访问该共享内存而已。</p>
+<p><code>shmctl</code>函数可以对共享内存执行多种操作，根据参数 cmd 执行相应的操作。常用的是<code>IPC_RMID</code>（从系统中删除该共享内存）。</p>
+<h3 id="3、例子-4"><a href="#3、例子-4" class="headerlink" title="3、例子"></a>3、例子</h3><p>下面这个例子，使用了【共享内存+信号量+消息队列】的组合来实现服务器进程与客户进程间的通信。</p>
+<ul>
+<li>共享内存用来传递数据；</li>
+<li>信号量用来同步；</li>
+<li>消息队列用来 在客户端修改了共享内存后 通知服务器读取。</li>
+</ul>
+<p>server.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br></pre></td><td class="code"><pre><span class="line">  <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line">  <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line">  <span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/shm.h&gt;  // shared memory</span></span></span><br><span class="line">  <span class="number">4</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/sem.h&gt;  // semaphore</span></span></span><br><span class="line">  <span class="number">5</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/msg.h&gt;  // message queue</span></span></span><br><span class="line">  <span class="number">6</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;   // memcpy</span></span></span><br><span class="line">  <span class="number">7</span> </span><br><span class="line">  <span class="number">8</span> <span class="comment">// 消息队列结构</span></span><br><span class="line">  <span class="number">9</span> <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> &#123;</span></span><br><span class="line"> <span class="number">10</span>     <span class="keyword">long</span> mtype;</span><br><span class="line"> <span class="number">11</span>     <span class="keyword">char</span> mtext;</span><br><span class="line"> <span class="number">12</span> &#125;;</span><br><span class="line"> <span class="number">13</span> </span><br><span class="line"> <span class="number">14</span> <span class="comment">// 联合体，用于semctl初始化</span></span><br><span class="line"> <span class="number">15</span> <span class="keyword">union</span> semun</span><br><span class="line"> <span class="number">16</span> &#123;</span><br><span class="line"> <span class="number">17</span>     <span class="keyword">int</span>              val; <span class="comment">/*for SETVAL*/</span></span><br><span class="line"> <span class="number">18</span>     <span class="class"><span class="keyword">struct</span> <span class="title">semid_ds</span> *<span class="title">buf</span>;</span></span><br><span class="line"> <span class="number">19</span>     <span class="keyword">unsigned</span> <span class="keyword">short</span>  *<span class="built_in">array</span>;</span><br><span class="line"> <span class="number">20</span> &#125;;</span><br><span class="line"> <span class="number">21</span> </span><br><span class="line"> <span class="number">22</span> <span class="comment">// 初始化信号量</span></span><br><span class="line"> <span class="number">23</span> <span class="function"><span class="keyword">int</span> <span class="title">init_sem</span><span class="params">(<span class="keyword">int</span> sem_id, <span class="keyword">int</span> value)</span></span></span><br><span class="line"><span class="function"> 24 </span>&#123;</span><br><span class="line"> <span class="number">25</span>     <span class="keyword">union</span> semun tmp;</span><br><span class="line"> <span class="number">26</span>     tmp.val = value;</span><br><span class="line"> <span class="number">27</span>     <span class="keyword">if</span>(semctl(sem_id, <span class="number">0</span>, SETVAL, tmp) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">28</span>     &#123;</span><br><span class="line"> <span class="number">29</span>         perror(<span class="string">"Init Semaphore Error"</span>);</span><br><span class="line"> <span class="number">30</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">31</span>     &#125;</span><br><span class="line"> <span class="number">32</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">33</span> &#125;</span><br><span class="line"> <span class="number">34</span> </span><br><span class="line"> <span class="number">35</span> <span class="comment">// P操作:</span></span><br><span class="line"> <span class="number">36</span> <span class="comment">//  若信号量值为1，获取资源并将信号量值-1 </span></span><br><span class="line"> <span class="number">37</span> <span class="comment">//  若信号量值为0，进程挂起等待</span></span><br><span class="line"> <span class="number">38</span> <span class="function"><span class="keyword">int</span> <span class="title">sem_p</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 39 </span>&#123;</span><br><span class="line"> <span class="number">40</span>     <span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sbuf</span>;</span></span><br><span class="line"> <span class="number">41</span>     sbuf.sem_num = <span class="number">0</span>; <span class="comment">/*序号*/</span></span><br><span class="line"> <span class="number">42</span>     sbuf.sem_op = <span class="number">-1</span>; <span class="comment">/*P操作*/</span></span><br><span class="line"> <span class="number">43</span>     sbuf.sem_flg = SEM_UNDO;</span><br><span class="line"> <span class="number">44</span> </span><br><span class="line"> <span class="number">45</span>     <span class="keyword">if</span>(semop(sem_id, &amp;sbuf, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">46</span>     &#123;</span><br><span class="line"> <span class="number">47</span>         perror(<span class="string">"P operation Error"</span>);</span><br><span class="line"> <span class="number">48</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">49</span>     &#125;</span><br><span class="line"> <span class="number">50</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">51</span> &#125;</span><br><span class="line"> <span class="number">52</span> </span><br><span class="line"> <span class="number">53</span> <span class="comment">// V操作：</span></span><br><span class="line"> <span class="number">54</span> <span class="comment">//  释放资源并将信号量值+1</span></span><br><span class="line"> <span class="number">55</span> <span class="comment">//  如果有进程正在挂起等待，则唤醒它们</span></span><br><span class="line"> <span class="number">56</span> <span class="function"><span class="keyword">int</span> <span class="title">sem_v</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 57 </span>&#123;</span><br><span class="line"> <span class="number">58</span>     <span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sbuf</span>;</span></span><br><span class="line"> <span class="number">59</span>     sbuf.sem_num = <span class="number">0</span>; <span class="comment">/*序号*/</span></span><br><span class="line"> <span class="number">60</span>     sbuf.sem_op = <span class="number">1</span>;  <span class="comment">/*V操作*/</span></span><br><span class="line"> <span class="number">61</span>     sbuf.sem_flg = SEM_UNDO;</span><br><span class="line"> <span class="number">62</span> </span><br><span class="line"> <span class="number">63</span>     <span class="keyword">if</span>(semop(sem_id, &amp;sbuf, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">64</span>     &#123;</span><br><span class="line"> <span class="number">65</span>         perror(<span class="string">"V operation Error"</span>);</span><br><span class="line"> <span class="number">66</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">67</span>     &#125;</span><br><span class="line"> <span class="number">68</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">69</span> &#125;</span><br><span class="line"> <span class="number">70</span> </span><br><span class="line"> <span class="number">71</span> <span class="comment">// 删除信号量集</span></span><br><span class="line"> <span class="number">72</span> <span class="function"><span class="keyword">int</span> <span class="title">del_sem</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 73 </span>&#123;</span><br><span class="line"> <span class="number">74</span>     <span class="keyword">union</span> semun tmp;</span><br><span class="line"> <span class="number">75</span>     <span class="keyword">if</span>(semctl(sem_id, <span class="number">0</span>, IPC_RMID, tmp) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">76</span>     &#123;</span><br><span class="line"> <span class="number">77</span>         perror(<span class="string">"Delete Semaphore Error"</span>);</span><br><span class="line"> <span class="number">78</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">79</span>     &#125;</span><br><span class="line"> <span class="number">80</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">81</span> &#125;</span><br><span class="line"> <span class="number">82</span> </span><br><span class="line"> <span class="number">83</span> <span class="comment">// 创建一个信号量集</span></span><br><span class="line"> <span class="number">84</span> <span class="function"><span class="keyword">int</span> <span class="title">creat_sem</span><span class="params">(<span class="keyword">key_t</span> key)</span></span></span><br><span class="line"><span class="function"> 85 </span>&#123;</span><br><span class="line"> <span class="number">86</span>     <span class="keyword">int</span> sem_id;</span><br><span class="line"> <span class="number">87</span>     <span class="keyword">if</span>((sem_id = semget(key, <span class="number">1</span>, IPC_CREAT|<span class="number">0666</span>)) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">88</span>     &#123;</span><br><span class="line"> <span class="number">89</span>         perror(<span class="string">"semget error"</span>);</span><br><span class="line"> <span class="number">90</span>         <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line"> <span class="number">91</span>     &#125;</span><br><span class="line"> <span class="number">92</span>     init_sem(sem_id, <span class="number">1</span>);  <span class="comment">/*初值设为1资源未占用*/</span></span><br><span class="line"> <span class="number">93</span>     <span class="keyword">return</span> sem_id;</span><br><span class="line"> <span class="number">94</span> &#125;</span><br><span class="line"> <span class="number">95</span> </span><br><span class="line"> <span class="number">96</span> </span><br><span class="line"> <span class="number">97</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> 98 </span>&#123;</span><br><span class="line"> <span class="number">99</span>     <span class="keyword">key_t</span> key;</span><br><span class="line"><span class="number">100</span>     <span class="keyword">int</span> shmid, semid, msqid;</span><br><span class="line"><span class="number">101</span>     <span class="keyword">char</span> *shm;</span><br><span class="line"><span class="number">102</span>     <span class="keyword">char</span> data[] = <span class="string">"this is server"</span>;</span><br><span class="line"><span class="number">103</span>     <span class="class"><span class="keyword">struct</span> <span class="title">shmid_ds</span> <span class="title">buf1</span>;</span>  <span class="comment">/*用于删除共享内存*/</span></span><br><span class="line"><span class="number">104</span>     <span class="class"><span class="keyword">struct</span> <span class="title">msqid_ds</span> <span class="title">buf2</span>;</span>  <span class="comment">/*用于删除消息队列*/</span></span><br><span class="line"><span class="number">105</span>     <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> <span class="title">msg</span>;</span>  <span class="comment">/*消息队列用于通知对方更新了共享内存*/</span></span><br><span class="line"><span class="number">106</span> </span><br><span class="line"><span class="number">107</span>     <span class="comment">// 获取key值</span></span><br><span class="line"><span class="number">108</span>     <span class="keyword">if</span>((key = ftok(<span class="string">"."</span>, <span class="string">'z'</span>)) &lt; <span class="number">0</span>)</span><br><span class="line"><span class="number">109</span>     &#123;</span><br><span class="line"><span class="number">110</span>         perror(<span class="string">"ftok error"</span>);</span><br><span class="line"><span class="number">111</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">112</span>     &#125;</span><br><span class="line"><span class="number">113</span> </span><br><span class="line"><span class="number">114</span>     <span class="comment">// 创建共享内存</span></span><br><span class="line"><span class="number">115</span>     <span class="keyword">if</span>((shmid = shmget(key, <span class="number">1024</span>, IPC_CREAT|<span class="number">0666</span>)) == <span class="number">-1</span>)</span><br><span class="line"><span class="number">116</span>     &#123;</span><br><span class="line"><span class="number">117</span>         perror(<span class="string">"Create Shared Memory Error"</span>);</span><br><span class="line"><span class="number">118</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">119</span>     &#125;</span><br><span class="line"><span class="number">120</span> </span><br><span class="line"><span class="number">121</span>     <span class="comment">// 连接共享内存</span></span><br><span class="line"><span class="number">122</span>     shm = (<span class="keyword">char</span>*)shmat(shmid, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="number">123</span>     <span class="keyword">if</span>((<span class="keyword">int</span>)shm == <span class="number">-1</span>)</span><br><span class="line"><span class="number">124</span>     &#123;</span><br><span class="line"><span class="number">125</span>         perror(<span class="string">"Attach Shared Memory Error"</span>);</span><br><span class="line"><span class="number">126</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">127</span>     &#125;</span><br><span class="line"><span class="number">128</span> </span><br><span class="line"><span class="number">129</span> </span><br><span class="line"><span class="number">130</span>     <span class="comment">// 创建消息队列</span></span><br><span class="line"><span class="number">131</span>     <span class="keyword">if</span> ((msqid = msgget(key, IPC_CREAT|<span class="number">0777</span>)) == <span class="number">-1</span>)</span><br><span class="line"><span class="number">132</span>     &#123;</span><br><span class="line"><span class="number">133</span>         perror(<span class="string">"msgget error"</span>);</span><br><span class="line"><span class="number">134</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">135</span>     &#125;</span><br><span class="line"><span class="number">136</span> </span><br><span class="line"><span class="number">137</span>     <span class="comment">// 创建信号量</span></span><br><span class="line"><span class="number">138</span>     semid = creat_sem(key);</span><br><span class="line"><span class="number">139</span>     </span><br><span class="line"><span class="number">140</span>     <span class="comment">// 读数据</span></span><br><span class="line"><span class="number">141</span>     <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line"><span class="number">142</span>     &#123;</span><br><span class="line"><span class="number">143</span>         msgrcv(msqid, &amp;msg, <span class="number">1</span>, <span class="number">888</span>, <span class="number">0</span>); <span class="comment">/*读取类型为888的消息*/</span></span><br><span class="line"><span class="number">144</span>         <span class="keyword">if</span>(msg.mtext == <span class="string">'q'</span>)  <span class="comment">/*quit - 跳出循环*/</span> </span><br><span class="line"><span class="number">145</span>             <span class="keyword">break</span>;</span><br><span class="line"><span class="number">146</span>         <span class="keyword">if</span>(msg.mtext == <span class="string">'r'</span>)  <span class="comment">/*read - 读共享内存*/</span></span><br><span class="line"><span class="number">147</span>         &#123;</span><br><span class="line"><span class="number">148</span>             sem_p(semid);</span><br><span class="line"><span class="number">149</span>             <span class="built_in">printf</span>(<span class="string">"%s\n"</span>,shm);</span><br><span class="line"><span class="number">150</span>             sem_v(semid);</span><br><span class="line"><span class="number">151</span>         &#125;</span><br><span class="line"><span class="number">152</span>     &#125;</span><br><span class="line"><span class="number">153</span> </span><br><span class="line"><span class="number">154</span>     <span class="comment">// 断开连接</span></span><br><span class="line"><span class="number">155</span>     shmdt(shm);</span><br><span class="line"><span class="number">156</span> </span><br><span class="line"><span class="number">157</span>     <span class="comment">/*删除共享内存、消息队列、信号量*/</span></span><br><span class="line"><span class="number">158</span>     shmctl(shmid, IPC_RMID, &amp;buf1);</span><br><span class="line"><span class="number">159</span>     msgctl(msqid, IPC_RMID, &amp;buf2);</span><br><span class="line"><span class="number">160</span>     del_sem(semid);</span><br><span class="line"><span class="number">161</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">162</span> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line">  <span class="number">1</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line">  <span class="number">2</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line">  <span class="number">3</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/shm.h&gt;  // shared memory</span></span></span><br><span class="line">  <span class="number">4</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/sem.h&gt;  // semaphore</span></span></span><br><span class="line">  <span class="number">5</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/msg.h&gt;  // message queue</span></span></span><br><span class="line">  <span class="number">6</span> <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string.h&gt;   // memcpy</span></span></span><br><span class="line">  <span class="number">7</span> </span><br><span class="line">  <span class="number">8</span> <span class="comment">// 消息队列结构</span></span><br><span class="line">  <span class="number">9</span> <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> &#123;</span></span><br><span class="line"> <span class="number">10</span>     <span class="keyword">long</span> mtype;</span><br><span class="line"> <span class="number">11</span>     <span class="keyword">char</span> mtext;</span><br><span class="line"> <span class="number">12</span> &#125;;</span><br><span class="line"> <span class="number">13</span> </span><br><span class="line"> <span class="number">14</span> <span class="comment">// 联合体，用于semctl初始化</span></span><br><span class="line"> <span class="number">15</span> <span class="keyword">union</span> semun</span><br><span class="line"> <span class="number">16</span> &#123;</span><br><span class="line"> <span class="number">17</span>     <span class="keyword">int</span>              val; <span class="comment">/*for SETVAL*/</span></span><br><span class="line"> <span class="number">18</span>     <span class="class"><span class="keyword">struct</span> <span class="title">semid_ds</span> *<span class="title">buf</span>;</span></span><br><span class="line"> <span class="number">19</span>     <span class="keyword">unsigned</span> <span class="keyword">short</span>  *<span class="built_in">array</span>;</span><br><span class="line"> <span class="number">20</span> &#125;;</span><br><span class="line"> <span class="number">21</span> </span><br><span class="line"> <span class="number">22</span> <span class="comment">// P操作:</span></span><br><span class="line"> <span class="number">23</span> <span class="comment">//  若信号量值为1，获取资源并将信号量值-1 </span></span><br><span class="line"> <span class="number">24</span> <span class="comment">//  若信号量值为0，进程挂起等待</span></span><br><span class="line"> <span class="number">25</span> <span class="function"><span class="keyword">int</span> <span class="title">sem_p</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 26 </span>&#123;</span><br><span class="line"> <span class="number">27</span>     <span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sbuf</span>;</span></span><br><span class="line"> <span class="number">28</span>     sbuf.sem_num = <span class="number">0</span>; <span class="comment">/*序号*/</span></span><br><span class="line"> <span class="number">29</span>     sbuf.sem_op = <span class="number">-1</span>; <span class="comment">/*P操作*/</span></span><br><span class="line"> <span class="number">30</span>     sbuf.sem_flg = SEM_UNDO;</span><br><span class="line"> <span class="number">31</span> </span><br><span class="line"> <span class="number">32</span>     <span class="keyword">if</span>(semop(sem_id, &amp;sbuf, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">33</span>     &#123;</span><br><span class="line"> <span class="number">34</span>         perror(<span class="string">"P operation Error"</span>);</span><br><span class="line"> <span class="number">35</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">36</span>     &#125;</span><br><span class="line"> <span class="number">37</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">38</span> &#125;</span><br><span class="line"> <span class="number">39</span> </span><br><span class="line"> <span class="number">40</span> <span class="comment">// V操作：</span></span><br><span class="line"> <span class="number">41</span> <span class="comment">//  释放资源并将信号量值+1</span></span><br><span class="line"> <span class="number">42</span> <span class="comment">//  如果有进程正在挂起等待，则唤醒它们</span></span><br><span class="line"> <span class="number">43</span> <span class="function"><span class="keyword">int</span> <span class="title">sem_v</span><span class="params">(<span class="keyword">int</span> sem_id)</span></span></span><br><span class="line"><span class="function"> 44 </span>&#123;</span><br><span class="line"> <span class="number">45</span>     <span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sbuf</span>;</span></span><br><span class="line"> <span class="number">46</span>     sbuf.sem_num = <span class="number">0</span>; <span class="comment">/*序号*/</span></span><br><span class="line"> <span class="number">47</span>     sbuf.sem_op = <span class="number">1</span>;  <span class="comment">/*V操作*/</span></span><br><span class="line"> <span class="number">48</span>     sbuf.sem_flg = SEM_UNDO;</span><br><span class="line"> <span class="number">49</span> </span><br><span class="line"> <span class="number">50</span>     <span class="keyword">if</span>(semop(sem_id, &amp;sbuf, <span class="number">1</span>) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">51</span>     &#123;</span><br><span class="line"> <span class="number">52</span>         perror(<span class="string">"V operation Error"</span>);</span><br><span class="line"> <span class="number">53</span>         <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"> <span class="number">54</span>     &#125;</span><br><span class="line"> <span class="number">55</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> <span class="number">56</span> &#125;</span><br><span class="line"> <span class="number">57</span> </span><br><span class="line"> <span class="number">58</span> </span><br><span class="line"> <span class="number">59</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"> 60 </span>&#123;</span><br><span class="line"> <span class="number">61</span>     <span class="keyword">key_t</span> key;</span><br><span class="line"> <span class="number">62</span>     <span class="keyword">int</span> shmid, semid, msqid;</span><br><span class="line"> <span class="number">63</span>     <span class="keyword">char</span> *shm;</span><br><span class="line"> <span class="number">64</span>     <span class="class"><span class="keyword">struct</span> <span class="title">msg_form</span> <span class="title">msg</span>;</span></span><br><span class="line"> <span class="number">65</span>     <span class="keyword">int</span> flag = <span class="number">1</span>; <span class="comment">/*while循环条件*/</span></span><br><span class="line"> <span class="number">66</span> </span><br><span class="line"> <span class="number">67</span>     <span class="comment">// 获取key值</span></span><br><span class="line"> <span class="number">68</span>     <span class="keyword">if</span>((key = ftok(<span class="string">"."</span>, <span class="string">'z'</span>)) &lt; <span class="number">0</span>)</span><br><span class="line"> <span class="number">69</span>     &#123;</span><br><span class="line"> <span class="number">70</span>         perror(<span class="string">"ftok error"</span>);</span><br><span class="line"> <span class="number">71</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"> <span class="number">72</span>     &#125;</span><br><span class="line"> <span class="number">73</span> </span><br><span class="line"> <span class="number">74</span>     <span class="comment">// 获取共享内存</span></span><br><span class="line"> <span class="number">75</span>     <span class="keyword">if</span>((shmid = shmget(key, <span class="number">1024</span>, <span class="number">0</span>)) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">76</span>     &#123;</span><br><span class="line"> <span class="number">77</span>         perror(<span class="string">"shmget error"</span>);</span><br><span class="line"> <span class="number">78</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"> <span class="number">79</span>     &#125;</span><br><span class="line"> <span class="number">80</span> </span><br><span class="line"> <span class="number">81</span>     <span class="comment">// 连接共享内存</span></span><br><span class="line"> <span class="number">82</span>     shm = (<span class="keyword">char</span>*)shmat(shmid, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"> <span class="number">83</span>     <span class="keyword">if</span>((<span class="keyword">int</span>)shm == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">84</span>     &#123;</span><br><span class="line"> <span class="number">85</span>         perror(<span class="string">"Attach Shared Memory Error"</span>);</span><br><span class="line"> <span class="number">86</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"> <span class="number">87</span>     &#125;</span><br><span class="line"> <span class="number">88</span> </span><br><span class="line"> <span class="number">89</span>     <span class="comment">// 创建消息队列</span></span><br><span class="line"> <span class="number">90</span>     <span class="keyword">if</span> ((msqid = msgget(key, <span class="number">0</span>)) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">91</span>     &#123;</span><br><span class="line"> <span class="number">92</span>         perror(<span class="string">"msgget error"</span>);</span><br><span class="line"> <span class="number">93</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"> <span class="number">94</span>     &#125;</span><br><span class="line"> <span class="number">95</span> </span><br><span class="line"> <span class="number">96</span>     <span class="comment">// 获取信号量</span></span><br><span class="line"> <span class="number">97</span>     <span class="keyword">if</span>((semid = semget(key, <span class="number">0</span>, <span class="number">0</span>)) == <span class="number">-1</span>)</span><br><span class="line"> <span class="number">98</span>     &#123;</span><br><span class="line"> <span class="number">99</span>         perror(<span class="string">"semget error"</span>);</span><br><span class="line"><span class="number">100</span>         <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line"><span class="number">101</span>     &#125;</span><br><span class="line"><span class="number">102</span>     </span><br><span class="line"><span class="number">103</span>     <span class="comment">// 写数据</span></span><br><span class="line"><span class="number">104</span>     <span class="built_in">printf</span>(<span class="string">"***************************************\n"</span>);</span><br><span class="line"><span class="number">105</span>     <span class="built_in">printf</span>(<span class="string">"*                 IPC                 *\n"</span>);</span><br><span class="line"><span class="number">106</span>     <span class="built_in">printf</span>(<span class="string">"*    Input r to send data to server.  *\n"</span>);</span><br><span class="line"><span class="number">107</span>     <span class="built_in">printf</span>(<span class="string">"*    Input q to quit.                 *\n"</span>);</span><br><span class="line"><span class="number">108</span>     <span class="built_in">printf</span>(<span class="string">"***************************************\n"</span>);</span><br><span class="line"><span class="number">109</span>     </span><br><span class="line"><span class="number">110</span>     <span class="keyword">while</span>(flag)</span><br><span class="line"><span class="number">111</span>     &#123;</span><br><span class="line"><span class="number">112</span>         <span class="keyword">char</span> c;</span><br><span class="line"><span class="number">113</span>         <span class="built_in">printf</span>(<span class="string">"Please input command: "</span>);</span><br><span class="line"><span class="number">114</span>         <span class="built_in">scanf</span>(<span class="string">"%c"</span>, &amp;c);</span><br><span class="line"><span class="number">115</span>         <span class="keyword">switch</span>(c)</span><br><span class="line"><span class="number">116</span>         &#123;</span><br><span class="line"><span class="number">117</span>             <span class="keyword">case</span> <span class="string">'r'</span>:</span><br><span class="line"><span class="number">118</span>                 <span class="built_in">printf</span>(<span class="string">"Data to send: "</span>);</span><br><span class="line"><span class="number">119</span>                 sem_p(semid);  <span class="comment">/*访问资源*/</span></span><br><span class="line"><span class="number">120</span>                 <span class="built_in">scanf</span>(<span class="string">"%s"</span>, shm);</span><br><span class="line"><span class="number">121</span>                 sem_v(semid);  <span class="comment">/*释放资源*/</span></span><br><span class="line"><span class="number">122</span>                 <span class="comment">/*清空标准输入缓冲区*/</span></span><br><span class="line"><span class="number">123</span>                 <span class="keyword">while</span>((c=getchar())!=<span class="string">'\n'</span> &amp;&amp; c!=EOF);</span><br><span class="line"><span class="number">124</span>                 msg.mtype = <span class="number">888</span>;  </span><br><span class="line"><span class="number">125</span>                 msg.mtext = <span class="string">'r'</span>;  <span class="comment">/*发送消息通知服务器读数据*/</span></span><br><span class="line"><span class="number">126</span>                 msgsnd(msqid, &amp;msg, <span class="keyword">sizeof</span>(msg.mtext), <span class="number">0</span>);</span><br><span class="line"><span class="number">127</span>                 <span class="keyword">break</span>;</span><br><span class="line"><span class="number">128</span>             <span class="keyword">case</span> <span class="string">'q'</span>:</span><br><span class="line"><span class="number">129</span>                 msg.mtype = <span class="number">888</span>;</span><br><span class="line"><span class="number">130</span>                 msg.mtext = <span class="string">'q'</span>;</span><br><span class="line"><span class="number">131</span>                 msgsnd(msqid, &amp;msg, <span class="keyword">sizeof</span>(msg.mtext), <span class="number">0</span>);</span><br><span class="line"><span class="number">132</span>                 flag = <span class="number">0</span>;</span><br><span class="line"><span class="number">133</span>                 <span class="keyword">break</span>;</span><br><span class="line"><span class="number">134</span>             <span class="keyword">default</span>:</span><br><span class="line"><span class="number">135</span>                 <span class="built_in">printf</span>(<span class="string">"Wrong input!\n"</span>);</span><br><span class="line"><span class="number">136</span>                 <span class="comment">/*清空标准输入缓冲区*/</span></span><br><span class="line"><span class="number">137</span>                 <span class="keyword">while</span>((c=getchar())!=<span class="string">'\n'</span> &amp;&amp; c!=EOF);</span><br><span class="line"><span class="number">138</span>         &#125;</span><br><span class="line"><span class="number">139</span>     &#125;</span><br><span class="line"><span class="number">140</span> </span><br><span class="line"><span class="number">141</span>     <span class="comment">// 断开连接</span></span><br><span class="line"><span class="number">142</span>     shmdt(shm);</span><br><span class="line"><span class="number">143</span> </span><br><span class="line"><span class="number">144</span>     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"><span class="number">145</span> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意：当<code>scanf()</code>输入字符或字符串时，缓冲区中遗留下了<code>\n</code>，所以每次输入操作后都需要清空标准输入的缓冲区。但是由于 gcc 编译器不支持<code>fflush(stdin)</code>（它只是标准C的扩展），所以我们使用了替代方案：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> <span class="keyword">while</span>((c=getchar())!=<span class="string">'\n'</span> &amp;&amp; c!=EOF);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p>Pipe：速度慢，容量有限，只有父子进程能通讯   </p>
+</li>
+<li><p>FIFO：任何进程间都能通讯，但速度慢   </p>
+</li>
+<li><p>消息队列：容量受到系统限制，且要注意第一次读的时候，要考虑上一次没有读完数据的问题   </p>
+</li>
+<li><p>信号量：不能传递复杂消息，只能用来同步   </p>
+</li>
+<li><p>共享内存区：能够很容易控制容量，速度快，但要保持同步，比如一个进程在写的时候，另一个进程要注意读写的问题，相当于线程中的线程安全，当然，共享内存区同样可以用作线程间通讯，不过没这个必要，线程间本来就已经共享了同一进程内的一块内存</p>
+</li>
+<li><p>socket</p>
+</li>
+</ol>
+<h2 id="转载："><a href="#转载：" class="headerlink" title="转载："></a>转载：</h2><p><a href="https://www.cnblogs.com/zgq0/p/8780893.html" target="_blank" rel="noopener">深度好文转载自</a>：<a href="https://www.cnblogs.com/zgq0/p/8780893.html，感谢原作者的无私分享" target="_blank" rel="noopener">https://www.cnblogs.com/zgq0/p/8780893.html，感谢原作者的无私分享</a>~</p>
+
+      </div>
+      
+      
+        <br>
+        
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-09-05T19:33:22+08:00">
+  <a class='notlink'>
+    <i class="fas fa-clock" aria-hidden="true"></i>
+    <p>更新于 2020年09月05日 19:33</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://ynzh.github.io/blog/os/IPC%E9%80%9A%E4%BF%A1/&title=IPC——进程间通信 | YNZH&summary=
+进程间通信"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://ynzh.github.io/blog/os/IPC%E9%80%9A%E4%BF%A1/&title=IPC——进程间通信 | YNZH&summary=
+进程间通信"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=https://ynzh.github.io/blog/os/IPC%E9%80%9A%E4%BF%A1/&title=IPC——进程间通信 | YNZH&summary=
+进程间通信"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+      
+      
+          <div class="prev-next">
+              
+                  <section class="prev">
+                      <span class="art-item-left">
+                          <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
+                          <h4>
+                              <a href="/blog/algorithms/%E5%BE%85%E5%8A%9E%E7%AE%97%E6%B3%95/" rel="prev" title="algorithms/待办算法">
+                                
+                                    algorithms/待办算法
+                                
+                              </a>
+                          </h4>
+                          
+                      </span>
+                  </section>
+              
+              
+                  <section class="next">
+                      <span class="art-item-right" aria-hidden="true">
+                          <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
+                          <h4>
+                              <a href="/blog/PDD_Interview_01/" rel="prev" title="PDD_Interview_01">
+                                  
+                                      PDD_Interview_01
+                                  
+                              </a>
+                          </h4>
+                          
+                      </span>
+                  </section>
+              
+          </div>
+      
+    </section>
+  </article>
+
+
+
+  <!-- 显示推荐文章和评论 -->
+
+
+
+  <article class="post white-box comments">
+    <section class="article typo">
+      <h4><i class="fas fa-comments fa-fw" aria-hidden="true"></i>&nbsp;评论</h4>
+      
+      
+      
+        <section id="comments">
+          <div id="gitalk-container"></div>
+        </section>
+      
+      
+    </section>
+  </article>
+
+
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'IPC——进程间通信',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+    
+    
+      
+        
+          
+          
+            
+              <section class='widget author'>
+  <div class='content material'>
+    
+      <div class='avatar'>
+        <img class='avatar' src='http://ww1.sinaimg.cn/large/005T5Tjily1g9pbbcbh27j30qn0qndhb.jpg'/>
+      </div>
+    
+    
+      <div class='text'>
+        
+        
+        
+          <p><span id="jinrishici-sentence">YNZH</span></p>
+          <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+        
+      </div>
+    
+    
+      <div class="social-wrapper">
+        
+          
+            <a href="/blog/atom.xml"
+              class="social fas fa-rss flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="/blog/mailto:hi@gaojinfeng.com"
+              class="social fas fa-envelope flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://github.com/YNZH"
+              class="social fab fa-github flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://music.163.com/#/user/home?id=124273232"
+              class="social fas fa-headphones-alt flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+      </div>
+    
+  </div>
+</section>
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              <section class='widget grid'>
+  
+<header class='material'>
+  <div><i class="fas fa-map-signs fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;站内导航</div>
+  
+</header>
+
+  <div class='content material'>
+    <ul class="grid navgation">
+      
+        <li><a class="flat-box" title="/blog/" href="/blog/"
+          
+          
+          id="blog">
+          
+            <i class="fas fa-clock fa-fw" aria-hidden="true"></i>
+          
+          近期文章
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/blog/archives/" href="/blog/blog/archives/"
+          
+            rel="nofollow"
+          
+          
+          id="blogblogarchives">
+          
+            <i class="fas fa-archive fa-fw" aria-hidden="true"></i>
+          
+          文章归档
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/projects/" href="/blog/projects/"
+          
+          
+          id="blogprojects">
+          
+            <i class="fas fa-code-branch fa-fw" aria-hidden="true"></i>
+          
+          开源项目
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/friends/" href="/blog/friends/"
+          
+            rel="nofollow"
+          
+          
+          id="blogfriends">
+          
+            <i class="fas fa-link fa-fw" aria-hidden="true"></i>
+          
+          我的友链
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/life/" href="/blog/life/"
+          
+          
+          id="bloglife">
+          
+            <i class="fas fa-book fa-fw" aria-hidden="true"></i>
+          
+          日常生活
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/about/" href="/blog/about/"
+          
+            rel="nofollow"
+          
+          
+          id="blogabout">
+          
+            <i class="fas fa-info-circle fa-fw" aria-hidden="true"></i>
+          
+          关于小站
+        </a></li>
+      
+    </ul>
+  </div>
+</section>
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget toc-wrapper'>
+    
+<header class='material'>
+  <div><i class="fas fa-list fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;本文目录</div>
+  
+    <!-- <div class='wrapper'><a class="s-toc rightBtn" rel="external nofollow noopener noreferrer noopener" href="javascript:void(0)" target="_blank"><i class="fas fa-thumbtack fa-fw"></i></a></div> -->
+  
+</header>
+
+    <div class='content material'>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、管道"><span class="toc-text">一、管道</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、特点："><span class="toc-text">1、特点：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一、无名管道-pipe"><span class="toc-text">一、无名管道 - pipe</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、特点：-1"><span class="toc-text">1、特点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、原型："><span class="toc-text">2、原型：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、例子"><span class="toc-text">3、例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、有名管道-FIFO"><span class="toc-text">二、有名管道 - FIFO</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、特点"><span class="toc-text">1、特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、原型"><span class="toc-text">2、原型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、例子-1"><span class="toc-text">3、例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、消息队列"><span class="toc-text">三、消息队列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、特点-1"><span class="toc-text">1、特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、原型-1"><span class="toc-text">2、原型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、例子-2"><span class="toc-text">3、例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、信号量"><span class="toc-text">四、信号量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、特点-2"><span class="toc-text">1、特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、原型-2"><span class="toc-text">2、原型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、例子-3"><span class="toc-text">3、例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、共享内存"><span class="toc-text">五、共享内存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、特点-3"><span class="toc-text">1、特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、原型-3"><span class="toc-text">2、原型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、例子-4"><span class="toc-text">3、例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#转载："><span class="toc-text">转载：</span></a></li></ol>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget category'>
+    
+<header class='material'>
+  <div><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;文章分类</div>
+  
+    <a class="rightBtn"
+    
+      rel="nofollow"
+    
+    
+    href="/blog/blog/categories/"
+    title="blog/categories/">
+    <i class="fas fa-expand-arrows-alt fa-fw"></i></a>
+  
+</header>
+
+    <div class='content material'>
+      <ul class="entry">
+        
+          <li><a class="flat-box" title="/blog/blog/categories/Algorithms/" href="/blog/blog/categories/Algorithms/"><div class='name'>Algorithms</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Dynamic-program/" href="/blog/blog/categories/Algorithms/Dynamic-program/"><div class='name'>Dynamic program</div><div class='badge'>(4)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Interval-Overlap/" href="/blog/blog/categories/Algorithms/Interval-Overlap/"><div class='name'>Interval Overlap</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/CNN/" href="/blog/blog/categories/CNN/"><div class='name'>CNN</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/MapReduce/" href="/blog/blog/categories/MapReduce/"><div class='name'>MapReduce</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/MapReduce/Hash/" href="/blog/blog/categories/MapReduce/Hash/"><div class='name'>Hash</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/java/" href="/blog/blog/categories/java/"><div class='name'>java</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/jvm/" href="/blog/blog/categories/java/jvm/"><div class='name'>jvm</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/" href="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/"><div class='name'>并发</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" href="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><div class='name'>设计模式</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/markdown/" href="/blog/blog/categories/markdown/"><div class='name'>markdown</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/os/" href="/blog/blog/categories/os/"><div class='name'>os</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/os/IPC/" href="/blog/blog/categories/os/IPC/"><div class='name'>IPC</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/pytorch/" href="/blog/blog/categories/pytorch/"><div class='name'>pytorch</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/tensorflow/" href="/blog/blog/categories/tensorflow/"><div class='name'>tensorflow</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><div class='name'>数据库</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/"><div class='name'>B+树</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/"><div class='name'>缓存</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/"><div class='name'>redis</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><div class='name'>计算机网络</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/"><div class='name'>TCP协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/"><div class='name'>http协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/"><div class='name'>socket</div><div class='badge'>(1)</div></a></li>
+        
+      </ul>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget tagcloud'>
+    
+<header class='material'>
+  <div><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;热门标签</div>
+  
+    <a class="rightBtn"
+    
+      rel="nofollow"
+    
+    
+    href="/blog/blog/tags/"
+    title="blog/tags/">
+    <i class="fas fa-expand-arrows-alt fa-fw"></i></a>
+  
+</header>
+
+    <div class='content material'>
+      <a href="/blog/blog/tags/CNN/" style="font-size: 14px; color: #999">CNN</a> <a href="/blog/blog/tags/algorithms/" style="font-size: 24px; color: #555">algorithms</a> <a href="/blog/blog/tags/java/" style="font-size: 19px; color: #777">java</a> <a href="/blog/blog/tags/markdown/" style="font-size: 14px; color: #999">markdown</a>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              <section class='widget list'>
+  
+<header class='material'>
+  <div><i class="fas fa-thumbs-up fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;常用连接</div>
+  
+</header>
+
+  <div class='content material'>
+    <ul class="entry">
+      
+        <li><a class="flat-box" title="https://baidu.com/" href="https://baidu.com/"
+          
+          
+          >
+          <div class='name'>
+            
+              <i class=" fa-fw" aria-hidden="true"></i>
+            
+            &nbsp;&nbsp;百度
+          </div>
+          
+        </a></li>
+      
+        <li><a class="flat-box" title="https://www.googlebridge.com/" href="https://www.googlebridge.com/"
+          
+          
+          >
+          <div class='name'>
+            
+              <i class=" fa-fw" aria-hidden="true"></i>
+            
+            &nbsp;&nbsp;谷歌
+          </div>
+          
+        </a></li>
+      
+    </ul>
+  </div>
+</section>
+
+            
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+    
+
+  
+</aside>
+
+<footer id="footer" class="clearfix">
+  
+  
+    <div class="social-wrapper">
+      
+        
+          <a href="/blog/atom.xml"
+            class="social fas fa-rss flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="/blog/mailto:hi@gaojinfeng.com"
+            class="social fas fa-envelope flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="https://github.com/YNZH"
+            class="social fab fa-github flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="https://music.163.com/#/user/home?id=124273232"
+            class="social fas fa-headphones-alt flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+    </div>
+  
+  <br>
+  <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+</div>
+  <div>
+    本站使用
+    <a href="https://xaoxuu.com/wiki/material-x/" target="_blank" class="codename">Material X</a>
+    作为主题
+    
+      ，
+      总访问量为
+      <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+      次
+    
+    。
+  </div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date(); 
+    function createtime() { 
+        var grt= new Date("12/15/2019 15:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+        now.setTime(now.getTime()+250); 
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+</footer>
+<script>setLoadingBarProgress(80);</script>
+
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+
+  <script>
+    var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+    var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+    var ALGOLIA_API_KEY = "";
+    var ALGOLIA_APP_ID = "";
+    var ALGOLIA_INDEX_NAME = "";
+    var AZURE_SERVICE_NAME = "";
+    var AZURE_INDEX_NAME = "";
+    var AZURE_QUERY_KEY = "";
+    var BAIDU_API_ID = "";
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/blog/"||"/";
+    if(!ROOT.endsWith('/'))ROOT += '/';
+  </script>
+
+<script src="//instant.page/1.2.2" type="module" integrity="sha384-2xV8M5griQmzyiY3CDqh1dn4z3llDVqZDqzjzcY+jCBCk/a5fXJmuZ/40JJAPeoU"></script>
+
+
+  <script async src="https://cdn.jsdelivr.net/npm/scrollreveal@4.0.5/dist/scrollreveal.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      const $reveal = $('.reveal');
+      if ($reveal.length === 0) return;
+      const sr = ScrollReveal({ distance: 0 });
+      sr.reveal('.reveal');
+    });
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+  
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        if ('.cover') {
+          $('.cover').backstretch(
+          ["https://img.vim-cn.com/29/91197b04c13f512f734a76d4ac422d89dbe229.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xepty1hqj30ku0iiwfl.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xess9xc3j31jk0v979k.jpg"],
+          {
+            duration: "6000",
+            fade: "2500"
+          });
+        } else {
+          $.backstretch(
+          ["https://img.vim-cn.com/29/91197b04c13f512f734a76d4ac422d89dbe229.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xepty1hqj30ku0iiwfl.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xess9xc3j31jk0v979k.jpg"],
+          {
+            duration: "6000",
+            fade: "2500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: "8dda6e88e6b8638e8f31",
+      clientSecret: "b031cdcc94205f45e4e89fb171c321e5c851bb6e",
+      repo: "blog",
+      owner: "YNZH",
+      admin: "YNZH",
+      
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+      
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+    gitalk.render('gitalk-container');
+  </script>
+
+
+
+
+
+  <script src="/blog/js/app.js"></script>
+
+
+  <script src="/blog/js/search.js"></script>
+
+
+
+
+<!-- 复制 -->
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  let COPY_SUCCESS = "复制成功";
+  let COPY_FAILURE = "复制失败";
+  /*页面载入完成后，创建复制按钮*/
+  !function (e, t, a) {
+    /* code */
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '  <i class="fa fa-copy"></i><span>复制</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+
+      clipboard.on('success', function(e) {
+        //您可以加入成功提示
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        success_prompt(COPY_SUCCESS);
+        e.clearSelection();
+      });
+      clipboard.on('error', function(e) {
+        //您可以加入失败提示
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+        fail_prompt(COPY_FAILURE);
+      });
+    }
+    initCopyCode();
+
+  }(window, document);
+
+  /**
+   * 弹出式提示框，默认1.5秒自动消失
+   * @param message 提示信息
+   * @param style 提示样式，有alert-success、alert-danger、alert-warning、alert-info
+   * @param time 消失时间
+   */
+  var prompt = function (message, style, time)
+  {
+      style = (style === undefined) ? 'alert-success' : style;
+      time = (time === undefined) ? 1500 : time*1000;
+      $('<div>')
+          .appendTo('body')
+          .addClass('alert ' + style)
+          .html(message)
+          .show()
+          .delay(time)
+          .fadeOut();
+  };
+
+  // 成功提示
+  var success_prompt = function(message, time)
+  {
+      prompt(message, 'alert-success', time);
+  };
+
+  // 失败提示
+  var fail_prompt = function(message, time)
+  {
+      prompt(message, 'alert-danger', time);
+  };
+
+  // 提醒
+  var warning_prompt = function(message, time)
+  {
+      prompt(message, 'alert-warning', time);
+  };
+
+  // 信息提示
+  var info_prompt = function(message, time)
+  {
+      prompt(message, 'alert-info', time);
+  };
+
+</script>
+
+
+<!-- fancybox -->
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  let LAZY_LOAD_IMAGE = "";
+  $(".article-entry").find("fancybox").find("img").each(function () {
+      var element = document.createElement("a");
+      $(element).attr("data-fancybox", "gallery");
+      $(element).attr("href", $(this).attr("src"));
+      /* 图片采用懒加载处理时,
+       * 一般图片标签内会有个属性名来存放图片的真实地址，比如 data-original,
+       * 那么此处将原本的属性名src替换为对应属性名data-original,
+       * 修改如下
+       */
+       if (LAZY_LOAD_IMAGE) {
+         $(element).attr("href", $(this).attr("data-original"));
+       }
+      $(this).wrap(element);
+  });
+</script>
+
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>

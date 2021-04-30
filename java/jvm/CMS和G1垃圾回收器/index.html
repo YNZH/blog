@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>G1垃圾回收器与CMS垃圾回收器 | YNZH</title>
+  
+  
+
+  
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!-- meta -->
+  
+  
+  <meta name='msapplication-TileColor' content='#2b5797'>
+  <meta name='theme-color' content='#ffffff'>
+  
+
+  <!-- link -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.css">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.10.1/css/all.min.css">
+  
+  
+  <link rel='apple-touch-icon' sizes='180x180' href='/blog/apple-touch-icon.png'>
+  <link rel='icon' type='image/png' sizes='32x32' href='/blog/favicon/favicon-32x32.png'>
+  <link rel='icon' type='image/png' sizes='16x16' href='/blog/favicon/favicon-16x16.png'>
+  <link rel='manifest' href='/blog/favicon/site.webmanifest'>
+  <link rel='mask-icon' href='/blog/favicon/safari-pinned-tab.svg' color='#5bbad5'>
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/blog/style.css">
+  
+
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+
+  
+  
+</head>
+
+<body>
+  
+  
+  <div class="cover-wrapper">
+    <cover class='cover post half'>
+      
+        
+  <h1 class='title'>YNZH's Blog</h1>
+
+
+  <div class="m_search">
+    <form name="searchform" class="form u-search-form">
+      <input type="text" class="input u-search-input" placeholder="" />
+      <i class="icon fas fa-search fa-fw"></i>
+    </form>
+  </div>
+
+<div class='menu navgation'>
+  <ul class='h-list'>
+    
+      
+        <li>
+          <a class="nav home" href="/blog/"
+            
+            
+            id="blog">
+            <i class='fas fa-rss fa-fw'></i>&nbsp;主页
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/projects/"
+            
+            
+            id="blogprojects">
+            <i class='fas fa-code-branch fa-fw'></i>&nbsp;项目
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/friends/"
+            
+              rel="nofollow"
+            
+            
+            id="blogfriends">
+            <i class='fas fa-link fa-fw'></i>&nbsp;友链
+          </a>
+        </li>
+      
+        <li>
+          <a class="nav home" href="/blog/about/"
+            
+              rel="nofollow"
+            
+            
+            id="blogabout">
+            <i class='fas fa-info-circle fa-fw'></i>&nbsp;关于
+          </a>
+        </li>
+      
+    
+  </ul>
+</div>
+
+      
+    </cover>
+    <header class="l_header material">
+  <div id="loading-bar-wrapper">
+    <div id="loading-bar" class="material"></div>
+  </div>
+
+	<div class='wrapper'>
+		<div class="nav-main container container--flex">
+      <a class="logo flat-box" href='/blog/' >
+        
+          YNZH'S BLOG
+        
+      </a>
+			<div class='menu navgation'>
+				<ul class='h-list'>
+          
+  					
+  						<li>
+								<a class="nav flat-box" href="/blog/"
+                  
+                  
+                  id="blog">
+									<i class='fas fa-grin fa-fw'></i>&nbsp;主页
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/categories/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogcategories">
+									<i class='fas fa-folder-open fa-fw'></i>&nbsp;分类
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/tags/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogtags">
+									<i class='fas fa-hashtag fa-fw'></i>&nbsp;标签
+								</a>
+							</li>
+      			
+  						<li>
+								<a class="nav flat-box" href="/blog/blog/archives/"
+                  
+                    rel="nofollow"
+                  
+                  
+                  id="blogblogarchives">
+									<i class='fas fa-archive fa-fw'></i>&nbsp;归档
+								</a>
+							</li>
+      			
+      		
+				</ul>
+			</div>
+
+			
+				<div class="m_search">
+					<form name="searchform" class="form u-search-form">
+						<input type="text" class="input u-search-input" placeholder="搜索" />
+						<i class="icon fas fa-search fa-fw"></i>
+					</form>
+				</div>
+			
+			<ul class='switcher h-list'>
+				
+					<li class='s-search'><a class="fas fa-search fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+				
+				<li class='s-menu'><a class="fas fa-bars fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+			</ul>
+		</div>
+
+		<div class='nav-sub container container--flex'>
+			<a class="logo flat-box"></a>
+			<ul class='switcher h-list'>
+				<li class='s-comment'><a class="flat-btn fas fa-comments fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+        
+          <li class='s-toc'><a class="flat-btn fas fa-list fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a></li>
+        
+			</ul>
+		</div>
+	</div>
+</header>
+	<aside class="menu-phone">
+    <header>
+		<nav class="menu navgation">
+      <ul>
+        
+          
+            <li>
+							<a class="nav flat-box" href="/blog/"
+                
+                
+                id="blog">
+								<i class='fas fa-clock fa-fw'></i>&nbsp;近期文章
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/blog/archives/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogblogarchives">
+								<i class='fas fa-archive fa-fw'></i>&nbsp;文章归档
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/projects/"
+                
+                
+                id="blogprojects">
+								<i class='fas fa-code-branch fa-fw'></i>&nbsp;开源项目
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/friends/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogfriends">
+								<i class='fas fa-link fa-fw'></i>&nbsp;我的友链
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="https://xaoxuu.com/wiki/material-x/"
+                
+                  rel="nofollow"
+                
+                
+                id="https:xaoxuu.comwikimaterial-x">
+								<i class='fas fa-book fa-fw'></i>&nbsp;主题文档
+							</a>
+            </li>
+          
+            <li>
+							<a class="nav flat-box" href="/blog/about/"
+                
+                  rel="nofollow"
+                
+                
+                id="blogabout">
+								<i class='fas fa-info-circle fa-fw'></i>&nbsp;关于小站
+							</a>
+            </li>
+          
+       
+      </ul>
+		</nav>
+    </header>
+	</aside>
+<script>setLoadingBarProgress(40);</script>
+
+  </div>
+
+
+  <div class="l_body">
+    <div class='body-wrapper'>
+      <div class='l_main'>
+  
+
+  <article id="post" class="post white-box article-type-post" itemscope itemprop="blogPost">
+    
+
+
+  <section class='meta'>
+    
+    
+    <div class="meta" id="header-meta">
+      
+        
+  
+    <h1 class="title">
+      <a href="/blog/java/jvm/CMS%E5%92%8CG1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/">
+        G1垃圾回收器与CMS垃圾回收器
+      </a>
+    </h1>
+  
+
+
+      
+      <div class='new-meta-box'>
+        
+          
+        
+          
+            
+  <div class='new-meta-item author'>
+    
+      <a href="https://ynzh.github.io/blog" rel="nofollow">
+        
+          <i class="fas fa-user" aria-hidden="true"></i>
+        
+        <p>高晋峰</p>
+      </a>
+    
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+    <p>2020年08月24日 16:12</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  
+  <div class='new-meta-item category'>
+    <a href='/blog/blog/categories/java/jvm/' rel="nofollow">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <p>java&nbsp;/&nbsp;jvm</p>
+    </a>
+  </div>
+
+
+          
+        
+          
+            
+  
+    <div class="new-meta-item browse busuanzi">
+      <a class='notlink'>
+        <i class="fas fa-eye" aria-hidden="true"></i>
+        <p>
+          <span id="busuanzi_value_page_pv">
+            <i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i>
+          </span>
+        </p>
+      </a>
+    </div>
+  
+
+
+          
+        
+          
+            
+
+          
+        
+      </div>
+      
+        <hr>
+      
+    </div>
+  </section>
+
+
+    <section class="article typo">
+      <div class="article-entry" itemprop="articleBody">
+        <blockquote>
+<p><a href="https://www.oracle.com/webfolder/technetwork/tutorials/obe/java/G1GettingStarted/index.html" target="_blank" rel="noopener">G1 and CMS</a></p>
+<a id="more"></a>
+</blockquote>
+<h3 id="CMS垃圾回收流程："><a href="#CMS垃圾回收流程：" class="headerlink" title="CMS垃圾回收流程："></a>CMS垃圾回收流程：</h3><blockquote>
+<ol>
+<li><p>CMS young GC 使用的是复制清除算法。</p>
+</li>
+<li><p>The CMS collector performs the following phases on the <strong>old generation</strong> of the heap:</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(1) Initial Mark <em>(Stop the World Event)</em></td>
+<td>Objects in old generation are “marked” as reachable including those objects which may be reachable from young generation. Pause times are typically short in duration relative to minor collection pause times.</td>
+</tr>
+<tr>
+<td>(2) Concurrent Marking</td>
+<td>Traverse the tenured generation object graph for reachable objects concurrently while Java application threads are executing. Starts scanning from marked objects and transitively marks all objects reachable from the roots. The mutators are executing during the concurrent phases 2, 3, and 5 and any objects allocated in the CMS generation during these phases (including promoted objects) are immediately marked as live.</td>
+</tr>
+<tr>
+<td>(3) Remark <em>(Stop the World Event)</em></td>
+<td>Finds objects that were missed by the concurrent mark phase due to updates by Java application threads to objects after the concurrent collector had finished tracing that object.</td>
+</tr>
+<tr>
+<td>(4) Concurrent Sweep</td>
+<td>Collects the objects identified as unreachable during marking phases. The collection of a dead object adds the space for the object to a free list for later allocation. Coalescing of dead objects may occur at this point. Note that live objects are not moved.</td>
+</tr>
+<tr>
+<td>(5) Resetting</td>
+<td>Prepare for next concurrent collection by clearing data structures.</td>
+</tr>
+</tbody></table>
+</blockquote>
+<h4 id="存在问题："><a href="#存在问题：" class="headerlink" title="存在问题："></a>存在问题：</h4><blockquote>
+<p>CMS是针对于老年代进行垃圾回收，会有碎片问题产生</p>
+</blockquote>
+<h3 id="The-G1-Garbage-Collector-Step-By-Step"><a href="#The-G1-Garbage-Collector-Step-By-Step" class="headerlink" title="The G1 Garbage Collector Step By Step:"></a>The G1 Garbage Collector Step By Step:</h3><h4 id="为啥叫G1："><a href="#为啥叫G1：" class="headerlink" title="为啥叫G1："></a>为啥叫G1：</h4><p>G1垃圾收集器将 heap划分为大小为1~32M等大小的不同区域。在垃圾回收的过程中：扫描各个region的时候可以判断出哪些region回收后剩余的内存空间最大，<strong>会优先选择</strong>这些region回收（所以叫G1），可以根据 参数最大延迟时间，根据预测模型，针对性的选择一定数量的region进行回收，从而达到低延时或延时可控的目的。</p>
+<blockquote>
+<ol>
+<li><p>Young GC</p>
+<p>将新生代regions的垃圾移除，同时copy剩余新生代到survivor region中，加入对象的年龄达到阈值则移入old generation regions中。这个过程是Stop The World的。</p>
+<p>In summary, the following can be said about the young generation in G1:</p>
+<ul>
+<li><p>The heap is a single memory space split into regions.</p>
+</li>
+<li><p>Young generation memory is composed of a set of non-contiguous regions. This makes it easy to resize when needed.</p>
+</li>
+<li><p>Young generation garbage collections, or young GCs, are stop the world events. All application threads are stopped for the operation.</p>
+</li>
+<li><p>The young GC is done in parallel using multiple threads.</p>
+</li>
+<li><p>Live objects are copied to new survivor or old generation regions.</p>
+</li>
+</ul>
+</li>
+</ol>
+<ol start="2">
+<li><p>Old gengeration GC：</p>
+<p>The G1 collector performs the following phases on the old generation of the heap. Note that some phases are part of a young generation collection.</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(1) Initial Mark <em>(*</em>Stop the World Event)***</td>
+<td>This is a stop the world event. With G1, it is piggybacked on a normal young GC. Mark survivor regions (root regions) which may have references to objects in old generation.</td>
+</tr>
+<tr>
+<td>(2) Root Region Scanning</td>
+<td>Scan survivor regions for references into the old generation. This happens while the application continues to run. The phase must be completed before a young GC can occur.</td>
+</tr>
+<tr>
+<td>(3) Concurrent Marking</td>
+<td>Find live objects over the entire heap. This happens while the application is running. This phase can be interrupted by young generation garbage collections.</td>
+</tr>
+<tr>
+<td>(4) Remark <strong><em>(Stop the World Event)</em></strong></td>
+<td>Completes the marking of live object in the heap. <strong>Uses an algorithm called snapshot-at-the-beginning (SATB)</strong> which is much faster than what was used in the CMS collector.</td>
+</tr>
+<tr>
+<td>(5) Cleanup <strong><em>(Stop the World Event and Concurrent)</em></strong></td>
+<td>Performs accounting on live objects and completely free regions. (Stop the world)Scrubs the Remembered Sets. (Stop the world)Reset the empty regions and return them to the free list. (Concurrent)</td>
+</tr>
+<tr>
+<td>(<em>) Copying <em>(</em></em>Stop the World Event)***</td>
+<td>These are the stop the world pauses to evacuate or copy live objects to new unused regions. This can be done with young generation regions which are logged as <code>[GC pause (young)]</code>. Or both young and old generation regions which are logged as <code>[GC Pause (mixed)]</code>.</td>
+</tr>
+</tbody></table>
+<ol start="3">
+<li><p>Summary of Old Generation GC</p>
+</li>
+<li><p>In summary, there are a few key points we can make about the G1 garbage collection on the old generation.</p>
+</li>
+<li><ul>
+<li><p>Concurrent Marking Phase</p>
+</li>
+<li><ul>
+<li>Liveness information is calculated concurrently while the application is running.</li>
+<li>This liveness information identifies which regions will be best to reclaim during an evacuation pause.</li>
+<li>There is no sweeping phase like in CMS.</li>
+</ul>
+</li>
+<li><p>Remark Phase</p>
+</li>
+<li><ul>
+<li>Uses the Snapshot-at-the-Beginning (SATB) algorithm which is much faster then what was used with CMS.</li>
+<li>Completely empty regions are reclaimed.</li>
+</ul>
+</li>
+<li><p>Copying/Cleanup Phase</p>
+</li>
+<li><ul>
+<li>Young generation and old generation are reclaimed at the same time.</li>
+<li>Old generation regions are selected based on their liveness.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="G1垃圾回收的模式："><a href="#G1垃圾回收的模式：" class="headerlink" title="G1垃圾回收的模式："></a>G1垃圾回收的模式：</h4><ol>
+<li><ul>
+<li>1、young GC（或者叫minor GC）：只收集young gen里的所有region，也就是eden和survivor。控制young GC开销的手段是动态改变young region的个数；<br>2、mixed GC：收集young gen里的所有region，外加若干选定的old gen region。控制mixed GC开销的手段是选多少个、哪几个old gen region。<br>3、其实没有3了。G1 GC的控制范围内没有full GC。如果mixed GC无法跟上mutator分配的速度，导致没有足够的空region来完成mixed GC，那么就会使用serial old GC（ mark-compact）来对整堆收集一次。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h3 id="一篇有趣的帖子："><a href="#一篇有趣的帖子：" class="headerlink" title="一篇有趣的帖子："></a><a href="https://hllvm-group.iteye.com/group/topic/44381" target="_blank" rel="noopener">一篇有趣的帖子</a>：</h3><blockquote>
+<p>参考之前我在另一帖的回复：<a href="http://hllvm.group.iteye.com/group/topic/21468#post-272070" target="_blank" rel="noopener">http://hllvm.group.iteye.com/group/topic/21468#post-272070</a><br>使用card table的remembered set，只要card的粒度大于一个word，那它都是不准确的。这种不准确性跟保守式GC的不准确性类似，虽然不影响GC的正确性（活的对象在GC后仍然会式活的），但却会带来一定程度的内存开销（少量死的对象在某次GC后可能还没被回收）。这种死了的对象叫做floating garbage。使用card marking的取舍就是要尽量让mutator快，而collector付出更多代价，消耗内存也增多。</p>
+<p>===========================================</p>
+<p>至于G1的算法⋯大体概念其实还挺直观的？到底是哪里没明白？</p>
+<p>从最高层看，G1的collector一侧其实就是两个大部分：<br>* 全局并发标记（global concurrent marking）<br>* 拷贝存活对象（evacuation）<br>而这两部分可以相对独立的执行。</p>
+<p>Global concurrent marking基于SATB形式的并发标记。它具体分为下面几个阶段：<br>1、<strong>初始标记（initial marking）</strong>：暂停阶段。扫描根集合，标记所有从根集合可直接到达的对象并将它们的字段压入扫描栈（marking stack）中等到后续扫描。G1使用外部的bitmap来记录mark信息，而不使用对象头的mark word里的mark bit。在分代式G1模式中，初始标记阶段借用young GC的暂停，因而没有额外的、单独的暂停阶段。<br>2、<strong>并发标记（concurrent marking）</strong>：并发阶段。不断从扫描栈取出引用递归扫描整个堆里的对象图。每扫描到一个对象就会对其标记，并将其字段压入扫描栈。重复扫描过程直到扫描栈清空。过程中还会扫描SATB write barrier所记录下的引用。<br>3、<strong>最终标记（final marking，在实现中也叫remarking）</strong>：暂停阶段。在完成并发标记后，每个Java线程还会有一些剩下的SATB write barrier记录的引用尚未处理。这个阶段就负责把剩下的引用处理完。同时这个阶段也进行弱引用处理（reference processing）。<br>注意这个暂停与CMS的remark有一个本质上的区别，那就是这个暂停只需要扫描SATB buffer，而CMS的remark需要重新扫描mod-union table里的dirty card外加整个根集合，而此时整个young gen（不管对象死活）都会被当作根集合的一部分，因而CMS remark有可能会非常慢。<br>4、<strong>清理（cleanup）</strong>：暂停阶段。清点和重置标记状态。这个阶段有点像mark-sweep中的sweep阶段，不过不是在堆上sweep实际对象，而是在marking bitmap里统计每个region被标记为活的对象有多少。这个阶段如果发现完全没有活对象的region就会将其整体回收到可分配region列表中。</p>
+<p>Evacuation阶段是全暂停的。它负责把一部分region里的活对象拷贝到空region里去，然后回收原本的region的空间。<br>Evacuation阶段可以自由选择任意多个region来独立收集构成收集集合（collection set，简称CSet），靠per-region remembered set（简称RSet）实现。这是regional garbage collector的特征。<br>在选定CSet后，evacuation其实就跟ParallelScavenge的young GC的算法类似，采用并行copying（或者叫scavenging）算法把CSet里每个region里的活对象拷贝到新的region里，整个过程完全暂停。从这个意义上说，G1的evacuation跟传统的mark-compact算法的compaction完全不同：前者会自己从根集合遍历对象图来判定对象的生死，不需要依赖global concurrent marking的结果，有就用，没有拉倒；而后者则依赖于之前的mark阶段对对象生死的判定。</p>
+<p>论文里提到的纯G1模式下，CSet的选定完全靠统计模型找处收益最高、开销不超过用户指定的上限的若干region。由于每个region都有RSet覆盖，要单独evacuate任意一个或多个region都没问题。</p>
+<p>分代式G1模式下有两种选定CSet的子模式，分别对应young GC与mixed GC：<br>* Young GC：选定所有young gen里的region。通过控制young gen的region个数来控制young GC的开销。<br>* Mixed GC：选定所有young gen里的region，外加根据global concurrent marking统计得出收集收益高的若干old gen region。在用户指定的开销目标范围内尽可能选择收益高的old gen region。<br>可以看到<strong>young gen region总是在CSet内</strong>。因此分代式G1不维护从young gen region出发的引用涉及的RSet更新。</p>
+<p>分代式G1的正常工作流程就是在young GC与mixed GC之间视情况切换，背后定期做做全局并发标记。Initial marking默认搭在young GC上执行；当全局并发标记正在工作时，G1不会选择做mixed GC，反之如果有mixed GC正在进行中G1也不会启动initial marking。<br>在正常工作流程中没有full GC的概念，old gen的收集全靠mixed GC来完成。</p>
+<p>如果mixed GC实在无法跟上程序分配内存的速度，导致old gen填满无法继续进行mixed GC，就会切换到G1之外的serial old GC来收集整个GC heap（注意，包括young、old、perm）。这才是真正的full GC。Full GC之所以叫full就是要收集整个堆，只选择old gen的部分region算不上full GC。进入这种状态的G1就跟-XX:+UseSerialGC的full GC一样（背后的核心代码是两者共用的）。<br>顺带一提，G1 GC的System.gc()默认还是full GC，也就是serial old GC。只有加上 -XX:+ExplicitGCInvokesConcurrent 时G1才会用自身的并发GC来执行System.gc()——此时System.gc()的作用是强行启动一次global concurrent marking；一般情况下暂停中只会做initial marking然后就返回了，接下来的concurrent marking还是照常并发执行。</p>
+<p>然后G1在mutator一侧需要使用write barrier来实现：<br>* SATB snapshot的完整性<br>* 跨region的引用记录到RSet里。<br>这两个动作都使用了logging barrier，其处理有一部分由collector一侧并发执行。</p>
+<p>可以看到在这么多步骤里，G1只有两件事是并发执行的：(1) 全局并发标记；(2) logging write barrier的部分处理。而“拷贝对象”（evacuation）这个很耗时的动作却不是并发而是完全暂停的。那G1为何还可以叫做低延迟的GC实现呢？<br>重点就在于G1虽然会mark整个堆，但并不evacuate所有有活对象的region；通过只选择收益高的少量region来evacuate，这种暂停的开销就可以（在一定范围内）可控。每次evacuate的暂停时间应该跟一般GC的young GC类似。所以G1把自己标榜为“软实时”（soft real-time）的GC。</p>
+<p>但是毕竟要暂停来拷贝对象，这个暂停时间再怎么低也有限。G1的evacuation pause在几十到一百甚至两百毫秒都很正常。所以切记不要把 -XX:MaxGCPauseMillis 设得太低，不然G1跟不上目标就容易导致垃圾堆积，反而更容易引发full GC而降低性能。通常设到100ms、250ms之类的都可能是合理的。设到50ms就不太靠谱，G1可能一开始还跟得上，跑的时间一长就开始乱来了。<br>这也提醒大家：如果您的程序要长时间运行，那么在技术选型评估GC性能的时候要让测试程序跑足够长时间才能看清状况。多久才够长取决于实际应用要连续运行多久。不然一个要运行一个月才重启一次的程序，如果测试的时候只测了两个小时就觉得没问题，实际上线跑起来可能正好两个半小时的时候来了一次几分钟的full GC暂停，那就纱布了⋯</p>
+<p>G1需要暂停来拷贝对象，而CMS在暂停中只需要扫描（mark）对象，那算法上G1的暂停时间会比CMS短么？<br>其实CMS在较小的堆、合适的workload的条件下暂停时间可以很轻松的短于G1。在2011年的时候Ramki告诉我堆大小的分水岭大概在10GB～15GB左右：以下的-Xmx更适合CMS，以上的才适合试用G1。现在到了2014年，G1的实现经过一定调优，大概在6GB～8GB也可以跟CMS有一比，我之前见过有在-Xmx4g的环境里G1比CMS的暂停时间更短的案例。<br>合适的workload：CMS最严重的暂停通常发生在remark阶段，因为它要扫描整个根集合，其中包括整个young gen。如果在CMS的并发标记阶段，mutator仍然在高速分配内存使得young gen里有很多对象的话，那remark阶段就可能会有很长时间的暂停。Young gen越大，CMS remark暂停时间就有可能越长。所以这是不适合CMS的workload。相反，如果mutator的分配速率比较温和，然后给足时间让并发的precleaning做好remark的前期工作，这样CMS就只需要较短的remark暂停，这种条件下G1的暂停时间很难低于CMS。</p>
+<p>要在拷贝对象的前提下实现真正的低延迟就需要做并发拷贝（concurrent compaction）。但是现在已知的实现concurrent compaction的GC算法无一例外需要使用某种形式的read barrier，例如Azul的C4和Red Hat的Shenendoah。不用read barrier的话，没办法安全的实现一边移动对象一边修正指向这些对象的引用，因为mutator也可以会并发的访问到这些引用。<br>而G1则坚持只用write barrier不用read barrier，所以无法实现concurrent compaction。</p>
+<p>大体概念其实就这样。有许多细节是挺麻烦的，例如如何提高并发减少瓶颈，如何处理收集到一半需要提前终止（abort，例如evacuation failure）的情况，等等。这样在读源码的时候会很头疼，但只是理解大体概念不需要关心到那种细节。</p>
+<p>其实影响G1实际性能的许多地方都在细节里，而不在基本算法上。例如整个开销-收益模型，收集时机的预测模型，选取CSet的策略等等。影响用户对G1做性能调优的也是在这些地方。可惜现在的G1在这些细节上做得仍然不算很好，所以预测得不够准确，性能潜力还无法完全发挥。我每天听同事吐槽感到甚欢乐orz</p>
+<p>IBM的Balanced GC，也叫incremental generational GC，其核心概念和基本算法都跟G1 GC非常相似。它也是一个regional garbage collector，使用多层的points-into remembered set，也有相对独立的并行增量式/并发式global marking和partial GC（与G1的evacuation/mixed GC对应）。只是一些实现细节和调优策略有差别而已，例如Balanced GC的global marking用的是incremental update式的write barrier而不是SATB；另外它支持arraylet和in-place compaction（可选不同region间的copy-forward，或同region内的mark-compact）。<br>关于Balanced GC，可以参考：<br>* <a href="http://www.ibm.com/developerworks/websphere/techjournal/1108_sciampacone/1108_sciampacone.html" target="_blank" rel="noopener">http://www.ibm.com/developerworks/websphere/techjournal/1108_sciampacone/1108_sciampacone.html</a><br>* <a href="http://www-01.ibm.com/support/knowledgecenter/SSYKE2_7.0.0/com.ibm.java.lnx.70.doc/diag/understanding/mm_gc_balanced.html" target="_blank" rel="noopener">http://www-01.ibm.com/support/knowledgecenter/SSYKE2_7.0.0/com.ibm.java.lnx.70.doc/diag/understanding/mm_gc_balanced.html</a></p>
+<p>===========================================</p>
+<p>我猜楼主的困惑的几个主要来源是：<br>1、对SATB的要求不熟悉<br>2、对logging write-barrier不熟悉<br>3、对多层的”points-into” remembered set不熟悉</p>
+<p>光读<a href="http://dl.acm.org/citation.cfm?id=1029879" target="_blank" rel="noopener">G1的原始论文</a>确实会比较头疼。写得太简单抽象，来龙去脉介绍得不够清楚。<br>嗯⋯但是我要咋讲解好呢？人家nari3都写了<a href="http://tatsu-zine.com/books/g1gc" target="_blank" rel="noopener">一本完整的书来讲解G1的算法</a>，写得还不错；Monica从使用调优方面写的<a href="http://www.oracle.com/technetwork/articles/java/g1gc-1984535.html" target="_blank" rel="noopener">Garbage First Garbage Collector Tuning</a>也总结得很好。我要在一帖里把问题彻底说清楚感觉挺麻烦。<br>另外，理解G1所需的基本知识其实在<a href="http://book.douban.com/subject/6809987/" target="_blank" rel="noopener">The Garbage Collection Handbook</a>里都说得很清楚，买本来耐心读读就啥都解决了。</p>
+<p>就上面的3点来说说吧：</p>
+<p>1、SATB，snapshot-at-the-beginning，是维持并发GC的正确性的一个手段。G1 GC的并发理论基础就是SATB，而<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/cms.html#sthref36" target="_blank" rel="noopener">CMS则是“incremental update”</a>。如果你读到<a href="https://christineflood.wordpress.com/2013/06/24/stay-with-me-im-going-somwhere-with-this/" target="_blank" rel="noopener">有文章说CMS是SATB</a>的话它肯定说错了。嗯Christine大概太久没关注CMS了⋯</p>
+<p>SATB抽象的说就是在一次GC开始的时候是活的对象就被认为是活的，此时的对象图形成一个逻辑“快照”（snapshot）；然后在GC过程中新分配的对象都当作是活的。其它不可到达的对象就是死的了。</p>
+<p>很容易知道哪些对象是一次GC开始之后新分配的：每个region记录着两个top-at-mark-start（TAMS）指针，分别为prevTAMS和nextTAMS。在TAMS以上的对象就是新分配的，因而被视为隐式marked。</p>
+<p>但是在并发GC里，collector一边动mutator也一边动，如果collector并发mark的过程中mutator覆盖了某些引用字段的值而collector还没mark到那里，那collector不就得不到完整的snapshot了么？</p>
+<p>为了解决这个问题就有了SATB write barrier。G1 GC具体使用的是“湯浅”（Yuasa）式的SATB write barrier的变种。它的相关论文是：<br><a href="http://dl.acm.org/citation.cfm?id=82237" target="_blank" rel="noopener">Real-time garbage collection on general-purpose machines</a>, Taiichi Yuasa（<a href="http://www.yuasa.kuis.kyoto-u.ac.jp/~yuasa/" target="_blank" rel="noopener">湯淺 太一</a>）</p>
+<p>Write barrier是对“对引用类型字段赋值”这个动作的环切，也就是说赋值的前后都在barrier覆盖的范畴内。在赋值前的部分的write barrier叫做pre-write barrier，在赋值后的则叫做post-write barrier。<br>在HotSpot VM里，在引入G1 GC之前，其它GC都只用了post-write barrier，所以它在源码里没有特别的前后缀；而G1 GC特有的pre-write barrier则在源码里有_pre的后缀，可以留意一下。</p>
+<p>C代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li><strong>void</strong> oop_field_store(oop* field, oop value) { </li>
+<li>pre_write_barrier(field); </li>
+<li>*field = value; // the actual store </li>
+<li>post_write_barrier(field, value); </li>
+<li>} </li>
+</ol>
+<p>Pre/post-write barrier跟SATB有啥关系呢？</p>
+<p>前面提到SATB要维持“在GC开始时活的对象”的状态这个逻辑snapshot。除了从root出发把整个对象图mark下来之外，其实只需要用pre-write barrier把每次引用关系变化时旧的引用值记下来就好了。这样，等concurrent marker到达某个对象时，这个对象的所有引用类型字段的变化全都有记录在案，就不会漏掉任何在snapshot里活的对象。当然，很可能有对象在snapshot中是活的，但随着并发GC的进行它可能本来已经死了，但SATB还是会让它活过这次GC。</p>
+<p>所以在G1 GC里，整个write barrier+oop_field_store是这样的：</p>
+<p>C代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li><strong>void</strong> oop_field_store(oop* field, oop new_value) { </li>
+<li>pre_write_barrier(field);       // pre-write barrier: for maintaining SATB invariant </li>
+<li>*field = new_value;          // the actual store </li>
+<li>post_write_barrier(field, new_value); // post-write barrier: for tracking cross-region reference </li>
+<li>} </li>
+</ol>
+<p>按照湯浅式SATB barrier的设计，pre-write barrier里面的抽象逻辑应当如下：</p>
+<p>C++代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li><strong>void</strong> pre_write_barrier(oop* field) { </li>
+<li><strong>if</strong> ($gc_phase == GC_CONCURRENT_MARK) { // SATB invariant only maintained during concurrent marking </li>
+<li>oop old_value = *field; </li>
+<li><strong>if</strong> (old_value != null &amp;&amp; !is_marked(old_value)) { </li>
+<li>mark_object(old_value); </li>
+<li>$mark_stack-&gt;push(old_value); // scan all of old_value’s fields later </li>
+<li>} </li>
+<li>} </li>
+<li>} </li>
+</ol>
+<p>在每次引用关系发生变化时，旧的引用所指向的对象就会被mark上，其子孙也会被递归mark上，这样就不会漏mark任何对象，snapshot的完整性也就得到了保证。</p>
+<p>但实际去看G1的论文和代码，会发现它的pre-write barrier却是类似这样的：</p>
+<p>C++代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li><strong>void</strong> pre_write_barrier(oop* field) { </li>
+<li>oop old_value = *field; </li>
+<li><strong>if</strong> (old_value != null) { </li>
+<li><strong>if</strong> ($gc_phase == GC_CONCURRENT_MARK) { // SATB invariant only maintained during concurrent marking </li>
+<li>$current_thread-&gt;satb_mark_queue-&gt;enqueue(old_value); </li>
+<li>} </li>
+<li>} </li>
+<li>} </li>
+</ol>
+<p>这比原本的湯浅式设计少了些东西：没有检查目标对象是否已经mark，也不去对目标对象做mark和扫描它的字段。<br>实际上该做的事情还是得做，只是不在这里做而已。后面讲到logging barrier的时候就会展开说明了。</p>
+<p>（Pre-write barrier的实际代码有好几个版本，其中最简单明白的版本是：</p>
+<p>C++代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li>// This notes that we don’t need to access any BarrierSet data </li>
+<li>// structures, so this can be called from a static context. </li>
+<li><strong>template</strong> &lt;<strong>class</strong> T&gt; <strong>static</strong> <strong>void</strong> write_ref_field_pre_static(T* field, oop newVal) { </li>
+<li>T heap_oop = oopDesc::load_heap_oop(field); </li>
+<li><strong>if</strong> (!oopDesc::is_null(heap_oop)) { </li>
+<li>enqueue(oopDesc::decode_heap_oop(heap_oop)); </li>
+<li>} </li>
+<li>} </li>
+</ol>
+<p>enqueue动作的实际代码则在G1SATBCardTableModRefBS::enqueue(oop pre_val)。<br>它判断当前是否在concurrent marking phase用的是：</p>
+<p>C++代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li>JavaThread::satb_mark_queue_set().is_active() </li>
+</ol>
+<p>SATBMarkQueueSet只有在concurrent marking时才会被置为active。<br>）</p>
+<p>CMS的incremental update设计使得它在remark阶段必须重新扫描所有线程栈和整个young gen作为root；G1的SATB设计在remark阶段则只需要扫描剩下的satb_mark_queue。</p>
+<p>2、logging write barrier</p>
+<p>为了尽量减少write barrier对mutator性能的影响，G1将一部分原本要在barrier里做的事情挪到别的线程上并发执行。<br>实现这种分离的方式就是通过logging形式的write barrier：mutator只在barrier里把要做的事情的信息记（log）到一个队列里，然后另外的线程从队列里取出信息批量完成剩余的动作。</p>
+<p>以SATB write barrier为例，每个Java线程有一个独立的、定长的SATBMarkQueue，mutator在barrier里只把old_value压入该队列中。一个队列满了之后，它就会被加到全局的SATB队列集合SATBMarkQueueSet里等待处理，然后给对应的Java线程换一个新的、干净的队列继续执行下去。</p>
+<p>并发标记（concurrent marker）会定期检查全局SATB队列集合的大小。当全局集合中队列数量超过一定阈值后，concurrent marker就会处理集合里的所有队列：把队列里记录的每个oop都标记上，并将其引用字段压到标记栈（marking stack）上等后面做进一步标记。</p>
+<p>3、”Points-into” remembered set</p>
+<p>G1 GC的heap与HotSpot VM的其它GC一样有一个覆盖整个heap的card table。<br>逻辑上说，G1 GC的remembered set（下面简称RSet）是每个region有一份。这个RSet记录的是从别的region指向该region的card。所以这是一种“points-into”的remembered set。</p>
+<p>用card table实现的remembered set通常是points-out的，也就是说card table要记录的是从它覆盖的范围出发指向别的范围的指针。以分代式GC的card table为例，要记录old -&gt; young的跨代指针，被标记的card是old gen范围内的。</p>
+<p>G1 GC则是在points-out的card table之上再加了一层结构来构成points-into RSet：每个region会记录下到底哪些别的region有指向自己的指针，而这些指针分别在哪些card的范围内。<br>这个RSet其实是一个hash table，key是别的region的起始地址，value是一个集合，里面的元素是card table的index。</p>
+<p>举例来说，如果region A的RSet里有一项的key是region B，value里有index为1234的card，它的意思就是region B的一个card里有引用指向region A。所以对region A来说，该RSet记录的是points-into的关系；而card table仍然记录了points-out的关系。</p>
+<p>Monica写的<a href="http://www.infoq.com/articles/tuning-tips-G1-GC" target="_blank" rel="noopener">Tips for Tuning the Garbage First Garbage Collector</a>里有幅图形象的描述了points-into remembered set的关系，下面引用过来：</p>
+<p>Monica Beckwith 写道</p>
+<p><img src="http://www.infoq.com/resource/articles/tuning-tips-G1-GC/en/resources/fig1.jpg" alt="img"></p>
+<p>为了维持这种RSet，G1 GC的post-write barrier的抽象逻辑需要做下面的事情：<br>(暂时忽略hot card的特殊处理，同时忽略evacuation已经开始之后对collection set内的card的特殊处理）</p>
+<p>C代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li><strong>void</strong> post_write_barrier(oop* field, oop new_value) { </li>
+<li><strong>uintptr_t</strong> field_uint = (<strong>uintptr_t</strong>) field; </li>
+<li><strong>uintptr_t</strong> new_value_uint = (<strong>uintptr_t</strong>) new_value; </li>
+<li><strong>uintptr_t</strong> comb = (field_uint ^ new_value_uint) &gt;&gt; HeapRegion::LogOfHRGrainBytes; </li>
+<li></li>
+<li><strong>if</strong> (comb == 0) <strong>return</strong>; // field and new_value are in the same region </li>
+<li><strong>if</strong> (new_value == null) <strong>return</strong>; // filter out null stores </li>
+<li></li>
+<li>// Otherwise, add to remembered set </li>
+<li></li>
+<li>// first, add to card table </li>
+<li><strong>volatile</strong> jbyte* card_ptr = card_for(field); // get pointer to the card for this field </li>
+<li></li>
+<li>// in generational G1 mode, skip dirtying cards for young gen regions, </li>
+<li>// – young gen regions are always collected </li>
+<li>// if (*card_ptr == g1_young_gen) return; </li>
+<li></li>
+<li><strong>if</strong> (*card_ptr != dirty_card) { </li>
+<li>// dirty the card to reduce the work for multiple stores to the same card </li>
+<li>*card_ptr = dirty_card; </li>
+<li></li>
+<li>// clean the card the get ready to do the real work </li>
+<li>*card_ptr = clean_card; </li>
+<li></li>
+<li>// find the memory region representing the card </li>
+<li>HeapWord* start = $card_table-&gt;addr_for(card_ptr); </li>
+<li>HeapWord* end = start + CARD_SIZE_IN_WORDS; </li>
+<li>MemRegion* dirty_mem_region(start, end); </li>
+<li></li>
+<li>// and find the G1 heap region containing the card </li>
+<li>HeapRegion* from_region = $g1_heap-&gt;heap_region_containing(start); </li>
+<li></li>
+<li>// scan all reference fields in dirtied region </li>
+<li>foreach (oop from_obj in dirty_mem_region) { </li>
+<li>foreach (oop* f in from_obj-&gt;oop_fields()) { </li>
+<li>​    oop to_obj = *f; </li>
+<li>​    HeapRegion* to_region = $g1_heap-&gt;heap_region_containing(to_obj); </li>
+<li>​    <strong>if</strong> (from_region != to_region) { </li>
+<li>​     CardIdx_t from_card = from_region-&gt;card_index_for(card_ptr); </li>
+<li>​     to_region-&gt;remembered_set-&gt;add_reference(from_region, from_card); </li>
+<li>​    } </li>
+<li>} </li>
+<li>} </li>
+<li>} </li>
+<li>} </li>
+</ol>
+<p>可以看到一个region的RSet是如何与card table里的card关联在一起的。<br>中间有一处“奇怪”的代码，把card给涂黑然后又马上清掉。这在实际代码里其实是在两个不同线程上做的：在mutator线程上把card给dirty了之后加到一个队列里，然后ConcurrentG1RefineThread从队列里把card拿出来之后再置为clean。上面是为了把整体过程放在一起方便说明所以写成这样。<br>另外还有一部分注释掉的关于分代式G1模式的代码，这部分代码的作用就是过滤掉从young gen region出发的引用涉及的RSet维护。G1的论文讲解的基本算法是不分代的纯G1（pure garbage-first）只是简单提到了有分代式G1（generational garbage-first）。实际在JDK7或以上可以用的只有分代模式的G1，没有可用参数选择纯G1模式。为了贴合原始算法描述，这里就把分代相关的处理列出来但注释掉。</p>
+<p>每次向引用类型字段赋值都要经过这么多步骤来更新RSet的话开销实在太大，而实际G1的实现是类似：</p>
+<p>C代码 <a href="javascript:void()" target="_blank" rel="noopener"><img src="https://hllvm-group.iteye.com/images/icon_star.png" alt="收藏代码"></a></p>
+<ol>
+<li><strong>void</strong> post_write_barrier(oop* field, oop new_value) { </li>
+<li><strong>uintptr_t</strong> field_uint = (<strong>uintptr_t</strong>) field; </li>
+<li><strong>uintptr_t</strong> new_value_uint = (<strong>uintptr_t</strong>) new_value; </li>
+<li><strong>uintptr_t</strong> comb = (field_uint ^ new_value_uint) &gt;&gt; HeapRegion::LogOfHRGrainBytes; </li>
+<li></li>
+<li><strong>if</strong> (comb == 0) <strong>return</strong>; // field and new_value are in the same region </li>
+<li><strong>if</strong> (new_value == null) <strong>return</strong>; // filter out null stores </li>
+<li></li>
+<li>// Otherwise, log it </li>
+<li><strong>volatile</strong> jbyte* card_ptr = card_for(field); // get address of the card for this field </li>
+<li></li>
+<li>// in generational G1 mode, skip dirtying cards for young gen regions, </li>
+<li>// – young gen regions are always collected </li>
+<li>// if (*card_ptr == g1_young_gen) return; </li>
+<li></li>
+<li><strong>if</strong> (*card_ptr != dirty_card) { </li>
+<li>// dirty the card to reduce the work for multiple stores to the same card </li>
+<li>*card_ptr = dirty_card; </li>
+<li>// log the card for concurrent remembered set refinement </li>
+<li>JavaThread::current()-&gt;dirty_card_queue-&gt;enqueue(card_ptr); </li>
+<li>} </li>
+<li>} </li>
+</ol>
+<p>这是logging barrier在G1 write barrier上的又一次应用。</p>
+<p>跟SATB marking queue类似，每个Java线程有一个dirty card queue，也就是论文里说的每个线程的remembered set log；然后有一个全局的DirtyCardQueueSet，也就是论文里说的全局的filled RS buffers。<br>实际更新RSet的动作就交由多个ConcurrentG1RefineThread并发完成。每当全局队列集合超过一定阈值后，ConcurrentG1RefineThread就会取出若干个队列，遍历每个队列记录的card并将card加到对应的region的RSet里去。</p>
+<p>先写到这里，有啥问题我再更新到这个回复来。</p>
+</blockquote>
+<h3 id="做菜与洗碗："><a href="#做菜与洗碗：" class="headerlink" title="做菜与洗碗："></a><a href="https://www.iteye.com/blog/rednaxelafx-2168844" target="_blank" rel="noopener">做菜与洗碗</a>：</h3><blockquote>
+<p>今天晚饭，老婆连着用了4个锅来做了两菜一汤。好吃<img src="https://www.iteye.com/images/smiles/icon_lol.gif" alt="img"><br>其中一道菜用了1个锅，另一道菜用了3个锅，汤用了2个锅。<br>还有中间工序放临时状态的食材用的大小碗碟若干。</p>
+<p>嗯⋯嗯？但是总共只有4个锅诶。<br>于是做菜的过程中我也洗了几次碗。</p>
+<p>突然想起了什么⋯<br>老婆做菜跟我洗碗的关系，就是mutator与collector的关系！</p>
+<p>老婆作为mutator，做菜途中不断在切换工序的时候把中间状态的食材放到新的干净的锅/碗里。<br>锅/碗不够用的时候，老婆就调用了我，collector。</p>
+<p>老婆跟我用粗粒度同步，大致是个stop-the-world collection。所以我洗碗的时候老婆就在一旁休息着。</p>
+<p>我使用mark-compact算法，<br>(1) 找出所有要洗的锅碗瓢盆，<br>(2) 清洗它们，<br>(3) 想好要按什么顺序把它们放到架子上，<br>(4) 然后把它们放到架子上。</p>
+<p>收集好之后，老婆恢复做菜流程，直到锅/碗再次用完⋯</p>
+<p>今天状况有点特殊，老婆用锅用得特别快，我的洗碗速度有点跟不上。于是转入分代式收集模式：<br>更换速度快的锅/碗先洗，剩余的锅碗瓢盆先放一边。<br>终于又能跟上了～</p>
+</blockquote>
+<h3 id="疑问："><a href="#疑问：" class="headerlink" title="疑问："></a>疑问：</h3><ol>
+<li>既然G1在清除Old generation时候会暂停下来进行evacuation 对象从而清除内存碎片，复制对象相对来说是一个耗时的过程，然而CMS在对Old generation进行回收的时候除了标记垃圾对象位置为空之外，是不会对剩余的的live对象进行移动，从而产生碎片问题，那么CMS不应该比G1更快吗？？？</li>
+</ol>
+<p>​      G1之所以成为低延时，是因为其进行gc的时候并不会选择所有的region，而是会优先选择收益高的region，从而达到   延时相对可控（这是指的是软实时，g1会尽力的去做到目标但不保证一定成功）。不过既然要暂停下来拷贝对象，那么怎么说也肯定有一个延时的最低限制，所以一定不要把 -XX:MaxGCPauseMills 设置的太低，太低可能会导致在g1中垃圾堆积最后导致full gc降低性能。默认200ms是一个比较合理 的。 回到问题中其实对于较小的堆，合适的workload来说，CMS的暂停时间可轻松的低于G1，因为CMS只需要mark对象，并不需要进行碎片整理。通常来说CMS Stop the world最严重的时间是在remark阶段，期间会扫描根集合包括young generation，加入在并发标记的阶段，仍然有很多新的对象分配，那么remark阶段的时间就会越长，young gen越大，remark暂停时间就可能会越长。因此这种workload不太适合CMS。相反如果在并发标记的阶段mutator的分配速率比较温和，然后给足时间让并发的precleaning做好remark的前期工作那么CMS只需要很短的暂停时间，在这种场景下G1很难和CMS相提并论。G1适合更大点的的堆。</p>
+<h3 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h3><ol>
+<li><a href="https://tech.meituan.com/2016/09/23/g1.html" target="_blank" rel="noopener">美团技术团队</a></li>
+<li><a href="https://hllvm-group.iteye.com/group/topic/44381" target="_blank" rel="noopener">https://hllvm-group.iteye.com/group/topic/44381</a></li>
+<li><a href="https://www.iteye.com/blog/rednaxelafx-2168844" target="_blank" rel="noopener">做菜与洗碗哈哈哈哈哈</a></li>
+</ol>
+
+      </div>
+      
+      
+        <br>
+        
+
+
+  <section class='meta' id="footer-meta">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-08-25T09:10:27+08:00">
+  <a class='notlink'>
+    <i class="fas fa-clock" aria-hidden="true"></i>
+    <p>更新于 2020年08月25日 09:10</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/blog/blog/tags/java/" rel="nofollow"><i class="fas fa-tag" aria-hidden="true"></i><p>java</p></a></div>
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="QQ好友" rel="external nofollow noopener noreferrer"
+          
+          href="http://connect.qq.com/widget/shareqq/index.html?url=https://ynzh.github.io/blog/java/jvm/CMS%E5%92%8CG1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/&title=G1垃圾回收器与CMS垃圾回收器 | YNZH&summary=
+G1 and CMS"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qq.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="QQ空间" rel="external nofollow noopener noreferrer"
+          
+          href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=https://ynzh.github.io/blog/java/jvm/CMS%E5%92%8CG1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/&title=G1垃圾回收器与CMS垃圾回收器 | YNZH&summary=
+G1 and CMS"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/qzone.png">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="微博" rel="external nofollow noopener noreferrer"
+          
+          href="http://service.weibo.com/share/share.php?url=https://ynzh.github.io/blog/java/jvm/CMS%E5%92%8CG1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/&title=G1垃圾回收器与CMS垃圾回收器 | YNZH&summary=
+G1 and CMS"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/xaoxuu/assets@19.1.9/logo/128/weibo.png">
+          
+        </a>
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </section>
+
+
+      
+      
+          <div class="prev-next">
+              
+                  <section class="prev">
+                      <span class="art-item-left">
+                          <h6><i class="fas fa-chevron-left" aria-hidden="true"></i>&nbsp;上一页</h6>
+                          <h4>
+                              <a href="/blog/MySQL%E4%BA%8B%E5%8A%A1%E7%89%B9%E6%80%A7%E5%92%8C%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" rel="prev" title="MySQL事务特性和隔离级别">
+                                
+                                    MySQL事务特性和隔离级别
+                                
+                              </a>
+                          </h4>
+                          
+                      </span>
+                  </section>
+              
+              
+                  <section class="next">
+                      <span class="art-item-right" aria-hidden="true">
+                          <h6>下一页&nbsp;<i class="fas fa-chevron-right" aria-hidden="true"></i></h6>
+                          <h4>
+                              <a href="/blog/algorithms/DP/Leetcode%E8%82%A1%E7%A5%A8%E9%97%AE%E9%A2%98%E5%85%A8%E8%A7%A3/" rel="prev" title="algorithms/DP/Leetcode股票问题全解">
+                                  
+                                      algorithms/DP/Leetcode股票问题全解
+                                  
+                              </a>
+                          </h4>
+                          
+                      </span>
+                  </section>
+              
+          </div>
+      
+    </section>
+  </article>
+
+
+
+  <!-- 显示推荐文章和评论 -->
+
+
+
+  <article class="post white-box comments">
+    <section class="article typo">
+      <h4><i class="fas fa-comments fa-fw" aria-hidden="true"></i>&nbsp;评论</h4>
+      
+      
+      
+        <section id="comments">
+          <div id="gitalk-container"></div>
+        </section>
+      
+      
+    </section>
+  </article>
+
+
+
+
+
+
+<!-- 根据页面mathjax变量决定是否加载MathJax数学公式js -->
+
+
+
+  <script>
+    window.subData = {
+      title: 'G1垃圾回收器与CMS垃圾回收器',
+      tools: true
+    }
+  </script>
+
+
+</div>
+<aside class='l_side'>
+  
+    
+    
+      
+        
+          
+          
+            
+              <section class='widget author'>
+  <div class='content material'>
+    
+      <div class='avatar'>
+        <img class='avatar' src='http://ww1.sinaimg.cn/large/005T5Tjily1g9pbbcbh27j30qn0qndhb.jpg'/>
+      </div>
+    
+    
+      <div class='text'>
+        
+        
+        
+          <p><span id="jinrishici-sentence">YNZH</span></p>
+          <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+        
+      </div>
+    
+    
+      <div class="social-wrapper">
+        
+          
+            <a href="/blog/atom.xml"
+              class="social fas fa-rss flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="/blog/mailto:hi@gaojinfeng.com"
+              class="social fas fa-envelope flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://github.com/YNZH"
+              class="social fab fa-github flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+          
+            <a href="https://music.163.com/#/user/home?id=124273232"
+              class="social fas fa-headphones-alt flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+            </a>
+          
+        
+      </div>
+    
+  </div>
+</section>
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              <section class='widget grid'>
+  
+<header class='material'>
+  <div><i class="fas fa-map-signs fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;站内导航</div>
+  
+</header>
+
+  <div class='content material'>
+    <ul class="grid navgation">
+      
+        <li><a class="flat-box" title="/blog/" href="/blog/"
+          
+          
+          id="blog">
+          
+            <i class="fas fa-clock fa-fw" aria-hidden="true"></i>
+          
+          近期文章
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/blog/archives/" href="/blog/blog/archives/"
+          
+            rel="nofollow"
+          
+          
+          id="blogblogarchives">
+          
+            <i class="fas fa-archive fa-fw" aria-hidden="true"></i>
+          
+          文章归档
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/projects/" href="/blog/projects/"
+          
+          
+          id="blogprojects">
+          
+            <i class="fas fa-code-branch fa-fw" aria-hidden="true"></i>
+          
+          开源项目
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/friends/" href="/blog/friends/"
+          
+            rel="nofollow"
+          
+          
+          id="blogfriends">
+          
+            <i class="fas fa-link fa-fw" aria-hidden="true"></i>
+          
+          我的友链
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/life/" href="/blog/life/"
+          
+          
+          id="bloglife">
+          
+            <i class="fas fa-book fa-fw" aria-hidden="true"></i>
+          
+          日常生活
+        </a></li>
+      
+        <li><a class="flat-box" title="/blog/about/" href="/blog/about/"
+          
+            rel="nofollow"
+          
+          
+          id="blogabout">
+          
+            <i class="fas fa-info-circle fa-fw" aria-hidden="true"></i>
+          
+          关于小站
+        </a></li>
+      
+    </ul>
+  </div>
+</section>
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget toc-wrapper'>
+    
+<header class='material'>
+  <div><i class="fas fa-list fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;本文目录</div>
+  
+    <!-- <div class='wrapper'><a class="s-toc rightBtn" rel="external nofollow noopener noreferrer noopener" href="javascript:void(0)" target="_blank"><i class="fas fa-thumbtack fa-fw"></i></a></div> -->
+  
+</header>
+
+    <div class='content material'>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#CMS垃圾回收流程："><span class="toc-text">CMS垃圾回收流程：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#存在问题："><span class="toc-text">存在问题：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#The-G1-Garbage-Collector-Step-By-Step"><span class="toc-text">The G1 Garbage Collector Step By Step:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#为啥叫G1："><span class="toc-text">为啥叫G1：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#G1垃圾回收的模式："><span class="toc-text">G1垃圾回收的模式：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一篇有趣的帖子："><span class="toc-text">一篇有趣的帖子：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#做菜与洗碗："><span class="toc-text">做菜与洗碗：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#疑问："><span class="toc-text">疑问：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考："><span class="toc-text">参考：</span></a></li></ol>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget category'>
+    
+<header class='material'>
+  <div><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;文章分类</div>
+  
+    <a class="rightBtn"
+    
+      rel="nofollow"
+    
+    
+    href="/blog/blog/categories/"
+    title="blog/categories/">
+    <i class="fas fa-expand-arrows-alt fa-fw"></i></a>
+  
+</header>
+
+    <div class='content material'>
+      <ul class="entry">
+        
+          <li><a class="flat-box" title="/blog/blog/categories/Algorithms/" href="/blog/blog/categories/Algorithms/"><div class='name'>Algorithms</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Dynamic-program/" href="/blog/blog/categories/Algorithms/Dynamic-program/"><div class='name'>Dynamic program</div><div class='badge'>(4)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/Algorithms/Interval-Overlap/" href="/blog/blog/categories/Algorithms/Interval-Overlap/"><div class='name'>Interval Overlap</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/CNN/" href="/blog/blog/categories/CNN/"><div class='name'>CNN</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/MapReduce/" href="/blog/blog/categories/MapReduce/"><div class='name'>MapReduce</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/MapReduce/Hash/" href="/blog/blog/categories/MapReduce/Hash/"><div class='name'>Hash</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/java/" href="/blog/blog/categories/java/"><div class='name'>java</div><div class='badge'>(5)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/jvm/" href="/blog/blog/categories/java/jvm/"><div class='name'>jvm</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/" href="/blog/blog/categories/java/%E5%B9%B6%E5%8F%91/"><div class='name'>并发</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" href="/blog/blog/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><div class='name'>设计模式</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/markdown/" href="/blog/blog/categories/markdown/"><div class='name'>markdown</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/os/" href="/blog/blog/categories/os/"><div class='name'>os</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/os/IPC/" href="/blog/blog/categories/os/IPC/"><div class='name'>IPC</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/pytorch/" href="/blog/blog/categories/pytorch/"><div class='name'>pytorch</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/tensorflow/" href="/blog/blog/categories/tensorflow/"><div class='name'>tensorflow</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><div class='name'>数据库</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/" href="/blog/blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/B-%E6%A0%91/"><div class='name'>B+树</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/"><div class='name'>缓存</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/" href="/blog/blog/categories/%E7%BC%93%E5%AD%98/redis/"><div class='name'>redis</div><div class='badge'>(2)</div></a></li>
+        
+          <li><a class="flat-box" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><div class='name'>计算机网络</div><div class='badge'>(3)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP%E5%8D%8F%E8%AE%AE/"><div class='name'>TCP协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/http%E5%8D%8F%E8%AE%AE/"><div class='name'>http协议</div><div class='badge'>(1)</div></a></li>
+        
+          <li><a class="flat-box child" title="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/" href="/blog/blog/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/socket/"><div class='name'>socket</div><div class='badge'>(1)</div></a></li>
+        
+      </ul>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              
+  <section class='widget tagcloud'>
+    
+<header class='material'>
+  <div><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;热门标签</div>
+  
+    <a class="rightBtn"
+    
+      rel="nofollow"
+    
+    
+    href="/blog/blog/tags/"
+    title="blog/tags/">
+    <i class="fas fa-expand-arrows-alt fa-fw"></i></a>
+  
+</header>
+
+    <div class='content material'>
+      <a href="/blog/blog/tags/CNN/" style="font-size: 14px; color: #999">CNN</a> <a href="/blog/blog/tags/algorithms/" style="font-size: 24px; color: #555">algorithms</a> <a href="/blog/blog/tags/java/" style="font-size: 19px; color: #777">java</a> <a href="/blog/blog/tags/markdown/" style="font-size: 14px; color: #999">markdown</a>
+    </div>
+  </section>
+
+
+            
+          
+        
+          
+          
+        
+          
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+            
+              <section class='widget list'>
+  
+<header class='material'>
+  <div><i class="fas fa-thumbs-up fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;常用连接</div>
+  
+</header>
+
+  <div class='content material'>
+    <ul class="entry">
+      
+        <li><a class="flat-box" title="https://baidu.com/" href="https://baidu.com/"
+          
+          
+          >
+          <div class='name'>
+            
+              <i class=" fa-fw" aria-hidden="true"></i>
+            
+            &nbsp;&nbsp;百度
+          </div>
+          
+        </a></li>
+      
+        <li><a class="flat-box" title="https://www.googlebridge.com/" href="https://www.googlebridge.com/"
+          
+          
+          >
+          <div class='name'>
+            
+              <i class=" fa-fw" aria-hidden="true"></i>
+            
+            &nbsp;&nbsp;谷歌
+          </div>
+          
+        </a></li>
+      
+    </ul>
+  </div>
+</section>
+
+            
+          
+        
+      
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+          
+          
+        
+      
+    
+
+  
+</aside>
+
+<footer id="footer" class="clearfix">
+  
+  
+    <div class="social-wrapper">
+      
+        
+          <a href="/blog/atom.xml"
+            class="social fas fa-rss flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="/blog/mailto:hi@gaojinfeng.com"
+            class="social fas fa-envelope flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="https://github.com/YNZH"
+            class="social fab fa-github flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+        
+          <a href="https://music.163.com/#/user/home?id=124273232"
+            class="social fas fa-headphones-alt flat-btn"
+            target="_blank"
+            rel="external nofollow noopener noreferrer">
+          </a>
+        
+      
+    </div>
+  
+  <br>
+  <div><p>博客内容遵循 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</a></p>
+</div>
+  <div>
+    本站使用
+    <a href="https://xaoxuu.com/wiki/material-x/" target="_blank" class="codename">Material X</a>
+    作为主题
+    
+      ，
+      总访问量为
+      <span id="busuanzi_value_site_pv"><i class="fas fa-spinner fa-spin fa-fw" aria-hidden="true"></i></span>
+      次
+    
+    。
+  </div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date(); 
+    function createtime() { 
+        var grt= new Date("12/15/2019 15:00:00");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+        now.setTime(now.getTime()+250); 
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 "; 
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+    } 
+setInterval("createtime()",250);
+</script>
+</footer>
+<script>setLoadingBarProgress(80);</script>
+
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </div>
+    <a class="s-top fas fa-arrow-up fa-fw" href='javascript:void(0)' target="_blank" rel="noopener"></a>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+
+  <script>
+    var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+    var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+    var ALGOLIA_API_KEY = "";
+    var ALGOLIA_APP_ID = "";
+    var ALGOLIA_INDEX_NAME = "";
+    var AZURE_SERVICE_NAME = "";
+    var AZURE_INDEX_NAME = "";
+    var AZURE_QUERY_KEY = "";
+    var BAIDU_API_ID = "";
+    var SEARCH_SERVICE = "hexo" || "hexo";
+    var ROOT = "/blog/"||"/";
+    if(!ROOT.endsWith('/'))ROOT += '/';
+  </script>
+
+<script src="//instant.page/1.2.2" type="module" integrity="sha384-2xV8M5griQmzyiY3CDqh1dn4z3llDVqZDqzjzcY+jCBCk/a5fXJmuZ/40JJAPeoU"></script>
+
+
+  <script async src="https://cdn.jsdelivr.net/npm/scrollreveal@4.0.5/dist/scrollreveal.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      const $reveal = $('.reveal');
+      if ($reveal.length === 0) return;
+      const sr = ScrollReveal({ distance: 0 });
+      sr.reveal('.reveal');
+    });
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/node-waves@0.7.6/dist/waves.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      Waves.attach('.flat-btn', ['waves-button']);
+      Waves.attach('.float-btn', ['waves-button', 'waves-float']);
+      Waves.attach('.float-btn-light', ['waves-button', 'waves-float', 'waves-light']);
+      Waves.attach('.flat-box', ['waves-block']);
+      Waves.attach('.float-box', ['waves-block', 'waves-float']);
+      Waves.attach('.waves-image');
+      Waves.init();
+    });
+  </script>
+
+
+  <script async src="https://cdn.jsdelivr.net/gh/xaoxuu/cdn-busuanzi@2.3/js/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+  
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        if ('.cover') {
+          $('.cover').backstretch(
+          ["https://img.vim-cn.com/29/91197b04c13f512f734a76d4ac422d89dbe229.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xepty1hqj30ku0iiwfl.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xess9xc3j31jk0v979k.jpg"],
+          {
+            duration: "6000",
+            fade: "2500"
+          });
+        } else {
+          $.backstretch(
+          ["https://img.vim-cn.com/29/91197b04c13f512f734a76d4ac422d89dbe229.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xepty1hqj30ku0iiwfl.jpg", "http://ww1.sinaimg.cn/large/005T5Tjily1g9xess9xc3j31jk0v979k.jpg"],
+          {
+            duration: "6000",
+            fade: "2500"
+          });
+        }
+      });
+    </script>
+  
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script type="text/javascript">
+    var gitalk = new Gitalk({
+      clientID: "8dda6e88e6b8638e8f31",
+      clientSecret: "b031cdcc94205f45e4e89fb171c321e5c851bb6e",
+      repo: "blog",
+      owner: "YNZH",
+      admin: "YNZH",
+      
+        id: location.pathname,      // Ensure uniqueness and length less than 50
+      
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+    gitalk.render('gitalk-container');
+  </script>
+
+
+
+
+
+  <script src="/blog/js/app.js"></script>
+
+
+  <script src="/blog/js/search.js"></script>
+
+
+
+
+<!-- 复制 -->
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  let COPY_SUCCESS = "复制成功";
+  let COPY_FAILURE = "复制失败";
+  /*页面载入完成后，创建复制按钮*/
+  !function (e, t, a) {
+    /* code */
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '  <i class="fa fa-copy"></i><span>复制</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+
+      clipboard.on('success', function(e) {
+        //您可以加入成功提示
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        success_prompt(COPY_SUCCESS);
+        e.clearSelection();
+      });
+      clipboard.on('error', function(e) {
+        //您可以加入失败提示
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+        fail_prompt(COPY_FAILURE);
+      });
+    }
+    initCopyCode();
+
+  }(window, document);
+
+  /**
+   * 弹出式提示框，默认1.5秒自动消失
+   * @param message 提示信息
+   * @param style 提示样式，有alert-success、alert-danger、alert-warning、alert-info
+   * @param time 消失时间
+   */
+  var prompt = function (message, style, time)
+  {
+      style = (style === undefined) ? 'alert-success' : style;
+      time = (time === undefined) ? 1500 : time*1000;
+      $('<div>')
+          .appendTo('body')
+          .addClass('alert ' + style)
+          .html(message)
+          .show()
+          .delay(time)
+          .fadeOut();
+  };
+
+  // 成功提示
+  var success_prompt = function(message, time)
+  {
+      prompt(message, 'alert-success', time);
+  };
+
+  // 失败提示
+  var fail_prompt = function(message, time)
+  {
+      prompt(message, 'alert-danger', time);
+  };
+
+  // 提醒
+  var warning_prompt = function(message, time)
+  {
+      prompt(message, 'alert-warning', time);
+  };
+
+  // 信息提示
+  var info_prompt = function(message, time)
+  {
+      prompt(message, 'alert-info', time);
+  };
+
+</script>
+
+
+<!-- fancybox -->
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+<script>
+  let LAZY_LOAD_IMAGE = "";
+  $(".article-entry").find("fancybox").find("img").each(function () {
+      var element = document.createElement("a");
+      $(element).attr("data-fancybox", "gallery");
+      $(element).attr("href", $(this).attr("src"));
+      /* 图片采用懒加载处理时,
+       * 一般图片标签内会有个属性名来存放图片的真实地址，比如 data-original,
+       * 那么此处将原本的属性名src替换为对应属性名data-original,
+       * 修改如下
+       */
+       if (LAZY_LOAD_IMAGE) {
+         $(element).attr("href", $(this).attr("data-original"));
+       }
+      $(this).wrap(element);
+  });
+</script>
+
+
+
+
+
+  <script>setLoadingBarProgress(100);</script>
+</body>
+</html>
